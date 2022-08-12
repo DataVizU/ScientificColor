@@ -13,6 +13,29 @@
                   :options="presetOptions"
                   @change="presetHandleChange"
                 />
+                <div class="slider-block">
+                  <input-slider
+                    id="H"
+                    :lower-limit="0"
+                    :upper-limit="360"
+                    :step="1"
+                    :default-value="hDefault"
+                  />
+                  <input-slider
+                    id="C"
+                    :lower-limit="0.0"
+                    :upper-limit="100.0"
+                    :step="0.01"
+                    :default-value="cDefault"
+                  />
+                  <input-slider
+                    id="L"
+                    :lower-limit="0.0"
+                    :upper-limit="100.0"
+                    :step="0.01"
+                    :default-value="lDefault"
+                  />
+                </div>
               </el-col>
               <el-col :span="12">
                 <div class="grid-content ep-bg-purple-light" />
@@ -30,9 +53,18 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
+import { computed, Ref, ref, watch } from "vue";
+import InputSlider from "@/components/input-slider.vue";
+import { PRESETS } from "@/assets/presets";
+import type { presetValueType } from "@/type/type";
 
-const presetValue = ref([]);
+const presetValue: Ref<[presetValueType] | never[]> = ref([]);
+
+const hDefault = ref([0, 360]);
+
+const cDefault = ref([0.0, 100.0]);
+
+const lDefault = ref([0.0, 100.0]);
 
 const presetOptions = [
   {
@@ -128,9 +160,12 @@ const presetOptions = [
   },
 ];
 
-const presetHandleChange = (value: []) => {
-  console.log(value);
+const presetHandleChange = (value: [presetValueType]) => {
+  const defaultValue = PRESETS[value[0]];
+  hDefault.value = [defaultValue[0], defaultValue[1]];
+  cDefault.value = [defaultValue[2], defaultValue[3]];
+  lDefault.value = [defaultValue[4], defaultValue[5]];
 };
 </script>
 
-<style scoped></style>
+<style scoped lang="less"></style>
