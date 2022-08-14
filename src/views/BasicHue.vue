@@ -1,7 +1,7 @@
 <template>
   <div class="common-layout">
     <el-container>
-      <el-header>
+      <el-header height="120px">
         <el-row :gutter="20">
           <el-col :span="16">
             <div class="title">色彩空间</div>
@@ -15,21 +15,27 @@
                 />
                 <div class="slider-block">
                   <input-slider
-                    id="H"
+                    id="h"
+                    class="input-slider"
+                    channel-id="H"
                     :lower-limit="0"
                     :upper-limit="360"
                     :step="1"
                     :default-value="hDefault"
                   />
                   <input-slider
-                    id="C"
+                    id="c"
+                    class="input-slider"
+                    channel-id="C"
                     :lower-limit="0.0"
                     :upper-limit="100.0"
                     :step="0.01"
                     :default-value="cDefault"
                   />
                   <input-slider
-                    id="L"
+                    id="l"
+                    class="input-slider"
+                    channel-id="L"
                     :lower-limit="0.0"
                     :upper-limit="100.0"
                     :step="0.01"
@@ -53,10 +59,11 @@
 </template>
 
 <script setup lang="ts">
-import { computed, Ref, ref, watch } from "vue";
+import { Ref, ref } from "vue";
 import InputSlider from "@/components/input-slider.vue";
 import { PRESETS } from "@/assets/presets";
 import type { presetValueType } from "@/type/type";
+import * as d3 from "d3";
 
 const presetValue: Ref<[presetValueType] | never[]> = ref([]);
 
@@ -162,10 +169,51 @@ const presetOptions = [
 
 const presetHandleChange = (value: [presetValueType]) => {
   const defaultValue = PRESETS[value[0]];
+  console.log(d3.hcl(defaultValue[1], defaultValue[3], defaultValue[5]).rgb())
   hDefault.value = [defaultValue[0], defaultValue[1]];
   cDefault.value = [defaultValue[2], defaultValue[3]];
   lDefault.value = [defaultValue[4], defaultValue[5]];
 };
 </script>
 
-<style scoped lang="less"></style>
+<style scoped lang="less">
+.el-container {
+  height: 100%;
+
+  .el-header {
+    height: 20%;
+
+    .title {
+      margin: 10px 0;
+    }
+
+    .el-row {
+      height: 100%;
+    }
+    .input-slider {
+      margin: 10px 0;
+    }
+  }
+}
+
+:deep(.slider-block) {
+  #h {
+    .el-slider__bar {
+      background-image: linear-gradient(to right, #000000, #FFFFFF);
+    }
+  }
+
+  #c {
+
+  }
+
+  #l {
+    .el-slider__bar {
+      background-image: linear-gradient(
+        to right,
+        rgba(0, 0, 0, 1),
+        rgba(255, 255, 255, 1));
+    }
+  }
+}
+</style>

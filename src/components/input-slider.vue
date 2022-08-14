@@ -3,7 +3,7 @@
     <el-row :gutter="20">
       <el-col :span="4">
         <el-input class="slider-input" v-model="minValue">
-          <template #prepend>{{ id }}</template>
+          <template #prepend>{{ channelId }}</template>
         </el-input>
       </el-col>
       <el-col :span="16">
@@ -29,7 +29,7 @@ import { useHCLStore } from "@/stores/HCL";
 import type { hclType } from "@/type/type";
 
 const props = defineProps<{
-  id: hclType;
+  channelId: hclType;
   lowerLimit: number;
   upperLimit: number;
   step: number;
@@ -61,7 +61,7 @@ const value = computed({
 
   set(newValue) {
     [minValue.value, maxValue.value] = newValue;
-    hcl.setData(props.id, newValue);
+    hcl.setData(props.channelId, newValue);
   },
 });
 
@@ -70,4 +70,22 @@ watch(props, (newValue) => {
 });
 </script>
 
-<style scoped></style>
+<style scoped lang="less">
+:deep(.el-slider) {
+  --el-slider-height: 100%;
+  --el-slider-button-wrapper-offset: 0;
+  --el-slider-button-size: 0;
+  --el-slider-runway-bg-color: rgba(0, 0, 0, 0);
+  .el-slider__runway {
+    .el-slider__button-wrapper {
+      .el-slider__button {
+        transform: translateX(0);
+        vertical-align: baseline;
+        border-radius: 0;
+        border: none;
+        height: 100%;
+      }
+    }
+  }
+}
+</style>

@@ -20,4 +20,15 @@
   </div>
 </template>
 
-<style scoped></style>
+<style scoped lang="less">
+.common-layout {
+  height: 100%;
+}
+.el-container {
+  min-height: 96vh;
+  padding: 1%;
+}
+el-main {
+  height: 100%;
+}
+</style>
