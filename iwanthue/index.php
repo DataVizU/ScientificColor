@@ -299,7 +299,7 @@ $(document).ready(function(){
     updateColorSpace()
     initVisualPalette()
     initPresets(1)
-    document.domain = 'vercel.app';
+    document.domain = 'scientific-color.vercel.app';
 });
 
 // Init the color samples once for all
