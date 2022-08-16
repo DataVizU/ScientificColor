@@ -1,9 +1,9 @@
-<script setup lang="ts"></script>
-
 <template>
   <div class="common-layout">
     <el-container>
-      <el-aside width="200px">Aside</el-aside>
+      <el-aside width="200px">
+        <el-button type="primary" @click="getContent">Primary</el-button>
+      </el-aside>
       <el-container>
         <el-header>
           <el-button-group class="ml-4">
@@ -19,6 +19,17 @@
     </el-container>
   </div>
 </template>
+
+<script setup lang="ts">
+const getContent = () => {
+  // const node = document.createElement("div");
+  const _iframe = document.getElementById("iwanthue").contentWindow;
+  // node.append(_iframe.cloneNode(true));
+  // console.log(node.innerHTML);
+  console.log(_iframe.document);
+  // console.log(_iframe.outerHTML);
+};
+</script>
 
 <style scoped lang="less">
 .common-layout {
