@@ -18,7 +18,7 @@
                 padding-bottom: 40px;
             }
         </style>
-        
+
     </head>
     <body>
         <!--[if lt IE 7]>
@@ -47,7 +47,7 @@
             </div>
         </div>
 
-        
+
         <div  id="workbench">
             <div class="container">
                 <div class="row">
@@ -117,7 +117,7 @@
                         </div>
 
                         <button class="btn" id="reduceToPalette" style="width: 100%" onclick="reduceToPalette();"><i class="icon-hand-right"></i> Make a palette</button>
-                        
+
                         <div id="palette_visual">
                         </div>
 
@@ -132,8 +132,8 @@
 
                         <div class="unselectable">
                             <div id="refine" style="/*display:none;*/">
-                            </div>                  
-                        </div>                  
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -191,7 +191,7 @@
             </div>
         </div>
 
-        
+
 <?php include('includes/footer.php') ?>
 
 
@@ -299,7 +299,7 @@ $(document).ready(function(){
     updateColorSpace()
     initVisualPalette()
     initPresets(1)
-    document.domain = 'scientific-color.vercel.app';
+    document.domain = '.vercel.app';
 });
 
 // Init the color samples once for all
@@ -342,7 +342,7 @@ $('#colorsCount').change(function(){
 /// COLOR SPACE
 $('#hmin, #hmax, #cmin, #cmax, #lmin, #lmax').change(function(){
     var width = $("#hueSelector").width();
-    
+
     selectorsState.hue.min = parseFloat($('#hmin').val())/360;
     selectorsState.hue.max = parseFloat($('#hmax').val())/360;
     selectorsState.chroma.min = parseFloat($('#cmin').val())/maxChroma;
@@ -394,7 +394,7 @@ var initSigma = function(){
         defaultLabelBGColor: '#fff',
         defaultLabelHoverColor: '#000',
         labelThreshold: 100,
-        
+
         // Edges
         defaultEdgeType: 'line',
         drawEdges: false,
@@ -407,7 +407,7 @@ var initSigma = function(){
         maxRatio: 1
       }
     });
-    
+
     // Mouse actions
     s.bind('overnodes',function(e){
         // Cursor: pointer for hovered nodes
