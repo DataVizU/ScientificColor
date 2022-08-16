@@ -1,0 +1,67 @@
+{
+  "name": "iwanthue",
+  "version": "2.0.0",
+  "description": "Colors for data scientists. Generate and refine palettes of optimally distinct colors.",
+  "main": "index.js",
+  "types": "index.d.ts",
+  "scripts": {
+    "lint": "eslint *.js test",
+    "precompute": "node scripts/precompute.js",
+    "prepublishOnly": "npm run readme && npm run lint && npm test && npm run precompute",
+    "readme": "cp ../README.md .",
+    "test": "mocha test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/medialab/iwanthue.git"
+  },
+  "files": [
+    "*.d.ts",
+    "precomputed/*.js",
+    "distances.js",
+    "helpers.js",
+    "index.js",
+    "palette.js",
+    "presets.js",
+    "rng.js"
+  ],
+  "keywords": [
+    "colors",
+    "distances",
+    "palette"
+  ],
+  "contributors": [
+    {
+      "name": "Mathieu Jacomy",
+      "url": "http://github.com/jacomyma"
+    },
+    {
+      "name": "Guillaume Plique",
+      "url": "http://github.com/Yomguithereal"
+    }
+  ],
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/medialab/iwanthue/issues"
+  },
+  "homepage": "https://github.com/medialab/iwanthue#readme",
+  "devDependencies": {
+    "@yomguithereal/eslint-config": "^4.4.0",
+    "chai": "^4.3.6",
+    "chalk": "^4.1.2",
+    "eslint": "^8.10.0",
+    "fs-extra": "^10.0.1",
+    "handlebars": "^4.7.7",
+    "lodash": "^4.17.21",
+    "mocha": "^9.2.1"
+  },
+  "eslintConfig": {
+    "extends": "@yomguithereal/eslint-config",
+    "parserOptions": {
+      "ecmaVersion": 6
+    }
+  },
+  "dependencies": {
+    "obliterator": "^2.0.3"
+  }
+}
