@@ -21,13 +21,31 @@
 </template>
 
 <script setup lang="ts">
+import { uesColorStore } from "@/stores/color";
+
+const colorStore = uesColorStore();
+
 const getContent = () => {
-  // const node = document.createElement("div");
-  const _iframe = document.getElementById("iwanthue").contentWindow;
-  // node.append(_iframe.cloneNode(true));
-  // console.log(node.innerHTML);
-  console.log(_iframe.document);
-  // console.log(_iframe.outerHTML);
+  try {
+    const hueIframe = (document.getElementById("iwanthue") as HTMLIFrameElement)
+      .contentWindow;
+    const hueIframeDocument = hueIframe?.document;
+    const hexColorRwaText = hueIframeDocument?.getElementById(
+      "resultColors_hexlist"
+    )?.innerHTML;
+    if (hexColorRwaText) {
+      const hexColor = hexColorRwaText
+        .replace("<pre>", "")
+        .replace("</pre>", "")
+        .split("<br>");
+      console.log(hexColor);
+      colorStore.setBasicColor(hexColor);
+      const storeColor = colorStore.getBasicColor;
+      console.log(storeColor);
+    }
+  } catch (e) {
+    console.error(e);
+  }
 };
 </script>
 
