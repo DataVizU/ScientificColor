@@ -38,6 +38,7 @@ const getContent = () => {
         .replace("<pre>", "")
         .replace("</pre>", "")
         .split("<br>");
+      hexColor.length = hexColor.length - 1;
       console.log(hexColor);
       colorStore.setBasicColor(hexColor);
       const storeColor = colorStore.getBasicColor;
