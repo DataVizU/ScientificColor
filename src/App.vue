@@ -2,7 +2,7 @@
   <div class="common-layout">
     <el-container>
       <el-aside width="200px">
-        <el-button type="primary" @click="getContent">Primary</el-button>
+        <SideBar></SideBar>
       </el-aside>
       <el-container>
         <el-header>
@@ -21,33 +21,7 @@
 </template>
 
 <script setup lang="ts">
-import { uesColorStore } from "@/stores/color";
-
-const colorStore = uesColorStore();
-
-const getContent = () => {
-  try {
-    const hueIframe = (document.getElementById("iwanthue") as HTMLIFrameElement)
-      .contentWindow;
-    const hueIframeDocument = hueIframe?.document;
-    const hexColorRwaText = hueIframeDocument?.getElementById(
-      "resultColors_hexlist"
-    )?.innerHTML;
-    if (hexColorRwaText) {
-      const hexColor = hexColorRwaText
-        .replace("<pre>", "")
-        .replace("</pre>", "")
-        .split("<br>");
-      hexColor.length = hexColor.length - 1;
-      console.log(hexColor);
-      colorStore.setBasicColor(hexColor);
-      const storeColor = colorStore.getBasicColor;
-      console.log(storeColor);
-    }
-  } catch (e) {
-    console.error(e);
-  }
-};
+import SideBar from "@/views/SideBar.vue";
 </script>
 
 <style scoped lang="less">

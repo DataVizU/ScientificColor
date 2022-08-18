@@ -3,7 +3,7 @@ import { defineStore } from "pinia";
 export const uesColorStore = defineStore({
   id: "color",
   state: () => ({
-    basicColor: [""],
+    basicColor: [] as string[],
   }),
   getters: {
     getBasicColor(state) {
