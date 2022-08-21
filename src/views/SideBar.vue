@@ -9,8 +9,11 @@
       <el-col :span="4">
         <div class="color-block" :style="{ background: item }"></div>
       </el-col>
-      <el-col :span="20">
+      <el-col :span="16">
         <div class="color-text">{{ item }}</div>
+      </el-col>
+      <el-col :span="4">
+        <el-button type="primary" @click="setNowColor(index)">Set</el-button>
       </el-col>
     </el-row>
   </el-col>
@@ -42,6 +45,12 @@ const getContent = () => {
   } catch (e) {
     console.error(e);
   }
+};
+
+const setNowColor = (index: number) => {
+  console.log(index);
+  colorStore.setNowColor(colorStore.basicColor[index]);
+  console.log(colorStore.basicColor[index]);
 };
 </script>
 

@@ -10,6 +10,9 @@
             <el-button type="primary">
               <RouterLink to="/">Basic Hue</RouterLink>
             </el-button>
+            <el-button type="primary">
+              <RouterLink to="/palette">Palette</RouterLink>
+            </el-button>
           </el-button-group>
         </el-header>
         <el-main>
