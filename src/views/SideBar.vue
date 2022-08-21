@@ -1,19 +1,32 @@
 <template>
-  <el-button type="primary" @click="getContent">Primary</el-button>
+  <el-button type="primary" @click="getBasicColor">Primary</el-button>
+  <el-button type="primary" @click="getPaletteColor">Primary</el-button>
   <el-col>
     <el-row
       :gutter="20"
-      v-for="(item, index) in colorStore.getBasicColor"
+      v-for="(item, index) in colorStore.basicColor"
       v-bind:key="index"
     >
-      <el-col :span="4">
+      <el-col :span="6">
         <div class="color-block" :style="{ background: item }"></div>
       </el-col>
-      <el-col :span="16">
+      <el-col :span="10">
         <div class="color-text">{{ item }}</div>
       </el-col>
-      <el-col :span="4">
+      <el-col :span="8">
         <el-button type="primary" @click="setNowColor(index)">Set</el-button>
+      </el-col>
+    </el-row>
+    <el-row
+      v-for="(palette, index1) in colorStore.palettes"
+      v-bind:key="index1"
+    >
+      <el-col
+        v-for="(item, index2) in palette"
+        v-bind:key="index2"
+        :span="Math.floor(24 / palette.length)"
+      >
+        <div class="color-block" :style="{ background: item }"></div>
       </el-col>
     </el-row>
   </el-col>
@@ -24,7 +37,7 @@ import { uesColorStore } from "@/stores/color";
 
 const colorStore = uesColorStore();
 
-const getContent = () => {
+const getBasicColor = () => {
   try {
     const hueIframe = (document.getElementById("iwanthue") as HTMLIFrameElement)
       .contentWindow;
@@ -47,10 +60,27 @@ const getContent = () => {
   }
 };
 
+const getPaletteColor = () => {
+  try {
+    const paletteIframe = (
+      document.getElementById("palette") as HTMLIFrameElement
+    ).contentWindow;
+    const paletteIframeDocument = paletteIframe?.document;
+    const paletteColorRwaText =
+      paletteIframeDocument?.getElementsByTagName("pre")[0].innerHTML;
+    if (paletteColorRwaText) {
+      const paletteColor = paletteColorRwaText.split(",");
+      colorStore.addPalette(paletteColor);
+      const palettes = colorStore.getPalette;
+      console.log(palettes);
+    }
+  } catch (e) {
+    console.error(e);
+  }
+};
+
 const setNowColor = (index: number) => {
-  console.log(index);
   colorStore.setNowColor(colorStore.basicColor[index]);
-  console.log(colorStore.basicColor[index]);
 };
 </script>
 

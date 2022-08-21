@@ -5,6 +5,7 @@ export const uesColorStore = defineStore({
   state: () => ({
     basicColor: [] as string[],
     nowColor: "#00429d",
+    palettes: [] as string[][],
   }),
   getters: {
     getBasicColor(state) {
@@ -13,6 +14,9 @@ export const uesColorStore = defineStore({
     getNowColor(state) {
       return state.nowColor;
     },
+    getPalette(state) {
+      return state.palettes;
+    },
   },
   actions: {
     setBasicColor(color: string[]) {
@@ -20,6 +24,9 @@ export const uesColorStore = defineStore({
     },
     setNowColor(color: string) {
       this.nowColor = color;
+    },
+    addPalette(palette: string[]) {
+      this.palettes.push(palette);
     },
   },
 });
