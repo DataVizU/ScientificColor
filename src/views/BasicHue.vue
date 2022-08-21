@@ -4,7 +4,7 @@
       <iframe
         id="iwanthue"
         name="iwanthue"
-        :src="hueUrl()"
+        :src="url"
         style="height: calc(100% - 50px)"
         width="100%"
       ></iframe>
@@ -13,7 +13,8 @@
 </template>
 
 <script setup lang="ts">
-import { hueUrl } from "@/assets/config";
+const url =
+  "https://iwanthue-3gxr4jyd858ecae2-1301838709.ap-shanghai.app.tcloudbase.com/";
 </script>
 
 <style scoped lang="less">

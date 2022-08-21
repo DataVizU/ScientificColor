@@ -8,7 +8,11 @@
       v-bind:key="index"
     >
       <el-col :span="6">
-        <div class="color-block" :style="{ background: item }"></div>
+        <div
+          class="color-block"
+          :style="{ background: item }"
+          :title="item"
+        ></div>
       </el-col>
       <el-col :span="10">
         <div class="color-text">{{ item }}</div>
@@ -21,13 +25,24 @@
       v-for="(palette, index1) in colorStore.palettes"
       v-bind:key="index1"
     >
-      <el-col
-        v-for="(item, index2) in palette"
-        v-bind:key="index2"
-        :span="Math.floor(24 / palette.length)"
-      >
-        <div class="color-block" :style="{ background: item }"></div>
-      </el-col>
+      <el-row class="color-block">
+        <el-col
+          v-for="(item, index2) in palette"
+          v-bind:key="index2"
+          :span="Math.floor(24 / palette.length)"
+        >
+          <div
+            class="color-block"
+            :style="{ background: item }"
+            :title="item"
+          ></div>
+        </el-col>
+      </el-row>
+      <el-row class="color-block" id="delete-btn">
+        <el-button type="primary" @click="deletePaletteColor(index1)">
+          Delete
+        </el-button>
+      </el-row>
     </el-row>
   </el-col>
 </template>
@@ -79,6 +94,10 @@ const getPaletteColor = () => {
   }
 };
 
+const deletePaletteColor = (index: number) => {
+  colorStore.deletePalette(index);
+};
+
 const setNowColor = (index: number) => {
   colorStore.setNowColor(colorStore.basicColor[index]);
 };
@@ -89,5 +108,10 @@ const setNowColor = (index: number) => {
   border-radius: 4px;
   min-height: 36px;
   width: 100%;
+  justify-content: space-between;
+}
+
+#delete-btn {
+  flex-direction: row-reverse;
 }
 </style>

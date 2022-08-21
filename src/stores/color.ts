@@ -28,5 +28,8 @@ export const uesColorStore = defineStore({
     addPalette(palette: string[]) {
       this.palettes.push(palette);
     },
+    deletePalette(index: number) {
+      this.palettes.splice(index, 1);
+    },
   },
 });
