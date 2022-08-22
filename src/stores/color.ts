@@ -6,6 +6,7 @@ export const uesColorStore = defineStore({
     basicColor: [] as string[],
     nowColor: "#00429d",
     palettes: [] as string[][],
+    colorsNumber: 9,
   }),
   getters: {
     getBasicColor(state) {

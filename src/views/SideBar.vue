@@ -21,6 +21,14 @@
         <el-button type="primary" @click="setNowColor(index)">Set</el-button>
       </el-col>
     </el-row>
+    <el-row id="slider-row">
+      <el-slider
+        v-model="colorStore.colorsNumber"
+        :min="1"
+        :max="20"
+        show-input
+      />
+    </el-row>
     <el-row
       v-for="(palette, index1) in colorStore.palettes"
       v-bind:key="index1"
@@ -103,7 +111,7 @@ const setNowColor = (index: number) => {
 };
 </script>
 
-<style scoped>
+<style scoped lang="less">
 .color-block {
   border-radius: 4px;
   min-height: 36px;
@@ -113,5 +121,12 @@ const setNowColor = (index: number) => {
 
 #delete-btn {
   flex-direction: row-reverse;
+}
+
+#slider-row {
+  width: 100%;
+  .el-slider {
+    margin-left: 12px;
+  }
 }
 </style>

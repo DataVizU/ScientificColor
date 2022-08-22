@@ -4,7 +4,13 @@
       <iframe
         id="palette"
         name="palette"
-        :src="baseUrl + '9|s|' + colorStore.nowColor.replace('#', '') + '||1|1'"
+        :src="
+          baseUrl +
+          colorStore.colorsNumber.toString() +
+          '|s|' +
+          colorStore.nowColor.replace('#', '') +
+          '||1|1'
+        "
         style="height: calc(100% - 50px)"
         width="100%"
       ></iframe>
