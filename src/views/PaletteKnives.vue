@@ -22,8 +22,7 @@
 import { uesColorStore } from "@/stores/color";
 
 const colorStore = uesColorStore();
-const baseUrl =
-  "https://paletter-2ginmlqy6316b03c-1301838709.ap-shanghai.app.tcloudbase.com/#/";
+const baseUrl = "https://datavizu.github.io/Palette/#/";
 </script>
 
 <style scoped lang="less">

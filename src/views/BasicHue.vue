@@ -13,8 +13,7 @@
 </template>
 
 <script setup lang="ts">
-const url =
-  "https://iwanthue-3gxr4jyd858ecae2-1301838709.ap-shanghai.app.tcloudbase.com/";
+const url = "https://datavizu.github.io/iwanthue/";
 </script>
 
 <style scoped lang="less">
