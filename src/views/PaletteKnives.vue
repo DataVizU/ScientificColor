@@ -5,7 +5,7 @@
         id="palette"
         name="palette"
         :src="
-          baseUrl() +
+          baseUrl +
           colorStore.colorsNumber.toString() +
           '|s|' +
           colorStore.nowColor.replace('#', '') +
@@ -20,15 +20,16 @@
 
 <script setup lang="ts">
 import { uesColorStore } from "@/stores/color";
+import { computed } from "vue";
 
 const colorStore = uesColorStore();
-const baseUrl = () => {
+const baseUrl = computed(() => {
   if (window.location.href.includes("datavizu.app")) {
     return "https://palette.datavizu.app/#/";
   } else {
     return "https://datavizu.github.io/Palette/#/";
   }
-};
+});
 </script>
 
 <style scoped lang="less">
