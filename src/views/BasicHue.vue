@@ -13,7 +13,15 @@
 </template>
 
 <script setup lang="ts">
-const url = "https://datavizu.github.io/iwanthue/";
+import { computed } from "vue";
+
+const url = computed(() => {
+  if (window.location.href.includes("datavizu.app")) {
+    return "https://iwanthue.datavizu.app/";
+  } else {
+    return "https://datavizu.github.io/iwanthue/";
+  }
+});
 </script>
 
 <style scoped lang="less">
