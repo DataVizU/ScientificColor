@@ -7,6 +7,13 @@
     <title>Vite App</title>
   </head>
   <body style="height: 100%; margin: 0">
+    <script>
+      (function (){
+        if (window.location.href.includes("datavizu.app")) {
+          document.domain = "datavizu.app";
+        }
+      })();
+    </script>
     <div id="app" style="height: 100%; margin: 0"></div>
     <script type="module" src="/src/main.ts"></script>
   </body>
