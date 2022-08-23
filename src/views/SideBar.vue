@@ -59,39 +59,62 @@
         </el-collapse-item>
       </el-collapse>
     </el-row>
-  </el-col>
-  <el-button type="primary" @click="getPaletteColor">Primary</el-button>
-  <el-col>
-    <el-row id="slider-row">
-      <el-slider
-        v-model="colorStore.colorsNumber"
-        :min="1"
-        :max="20"
-        show-input
-      />
-    </el-row>
-    <el-row
-      v-for="(palette, index1) in colorStore.palettes"
-      v-bind:key="index1"
-    >
-      <el-row class="color-block">
-        <el-col
-          v-for="(item, index2) in palette"
-          v-bind:key="index2"
-          :span="Math.floor(24 / palette.length)"
-        >
-          <div
-            class="color-block"
-            :style="{ background: item }"
-            :title="item"
-          ></div>
-        </el-col>
-      </el-row>
-      <el-row class="color-block" id="delete-btn">
-        <el-button type="primary" @click="deletePaletteColor(index1)">
-          Delete
-        </el-button>
-      </el-row>
+    <el-row>
+      <el-collapse
+        v-model="paletteColorActiveNames"
+        @change="paletteColorHandleChange"
+      >
+        <el-collapse-item name="1">
+          <template #title>
+            <el-row class="el-collapse-item-title">
+              <div class="el-collapse-item-title-text">
+                颜色梯度
+                <div class="el-collapse-item-title-distance-block"></div>
+                <el-icon
+                  class="el-collapse-item-title-arrow"
+                  :class="paletteColorIsActive"
+                >
+                  <ArrowRight />
+                </el-icon>
+              </div>
+              <el-button
+                type="primary"
+                @click.stop="getPaletteColor"
+                class="el-collapse-item-title-btn"
+              >
+                保存渐变色
+              </el-button>
+            </el-row>
+          </template>
+          <el-row id="slider-row">
+            <el-slider
+              v-model="colorStore.colorsNumber"
+              :min="1"
+              :max="20"
+              show-input
+            />
+          </el-row>
+          <el-row
+            v-for="(palette, index1) in colorStore.palettes"
+            v-bind:key="index1"
+            class="gradient"
+          >
+            <el-row class="gradient-block">
+              <div
+                class="gradient-color-block"
+                v-for="(item, index2) in palette"
+                v-bind:key="index2"
+                :style="{
+                  background: item,
+                  width: 100 / palette.length + '%',
+                }"
+                :title="item"
+              ></div>
+            </el-row>
+            <el-icon><Close @click="deletePaletteColor(index1)" /></el-icon>
+          </el-row>
+        </el-collapse-item>
+      </el-collapse>
     </el-row>
   </el-col>
 </template>
@@ -109,6 +132,16 @@ const basicColorHandleChange = (val: string[]) => {
     basicColorIsActive.value = "";
   } else {
     basicColorIsActive.value = "is-active";
+  }
+};
+
+const paletteColorIsActive = ref("is-active");
+const paletteColorActiveNames = ref(["1"]);
+const paletteColorHandleChange = (val: string[]) => {
+  if (val.length === 0) {
+    paletteColorIsActive.value = "";
+  } else {
+    paletteColorIsActive.value = "is-active";
   }
 };
 
@@ -250,7 +283,7 @@ const setNowColor = (index: number) => {
 }
 
 .color-text {
-  font-family: 'PingFang SC', serif;
+  font-family: "PingFang SC", serif;
   font-style: normal;
   font-weight: 400;
   font-size: 16px;
@@ -269,8 +302,34 @@ const setNowColor = (index: number) => {
 
 #slider-row {
   width: 100%;
+  padding-right: 10px;
+  padding-bottom: 24px;
   .el-slider {
     margin-left: 12px;
+  }
+}
+
+.gradient {
+  width: 100%;
+  height: 40px;
+
+  margin-bottom: 16px;
+
+  justify-content: space-between;
+  align-items: center;
+
+  .gradient-block {
+    width: 90%;
+    height: 100%;
+
+    padding: 4px;
+
+    border: 1px solid #dcdfe6;
+    border-radius: 4px;
+
+    .gradient-color-block {
+      height: 100%;
+    }
   }
 }
 </style>

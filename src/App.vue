@@ -66,6 +66,10 @@ el-main {
   height: 100%;
 }
 
+aside {
+  margin-left: 24px;
+}
+
 .switch-btn {
   margin-left: 5%;
   width: 95%;

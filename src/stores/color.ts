@@ -5,7 +5,7 @@ export const uesColorStore = defineStore({
   state: () => ({
     basicColor: [] as string[],
     nowColor: "#00429d",
-    palettes: [] as string[][],
+    palettes: [['#000e5b', '#001d6e', '#002b81', '#003a93', '#1048a4', '#2f55b4', '#4363c4', '#5571d4', '#677fe4', '#788ef5', '#8a9efe', '#9dafff', '#b0c1ff', '#c3d3ff', '#d5e4ff'],['#000e5b', '#001d6e', '#002b81', '#003a93', '#1048a4', '#2f55b4', '#4363c4', '#5571d4', '#677fe4', '#788ef5', '#8a9efe', '#9dafff', '#b0c1ff', '#c3d3ff', '#d5e4ff']] as string[][],
     colorsNumber: 9,
   }),
   getters: {
