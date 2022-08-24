@@ -3,7 +3,7 @@
     <el-col>
       <el-row id="title-bar">
         <div id="title">我的色板</div>
-        <el-button type="primary" id="download-btn">
+        <el-button type="primary" id="download-btn" v-if="colorStore.palettes.length">
           下载色板 <el-icon style="margin-left: 8px"><Download /></el-icon>
         </el-button>
       </el-row>
@@ -41,7 +41,7 @@
           </el-row>
         </el-collapse-item>
       </el-collapse>
-      <el-row id="all-color-code">
+      <el-row id="all-color-code" v-if="colorStore.palettes.length">
         <el-col :span="10">
           {{ allHexColorCode }}
         </el-col>
