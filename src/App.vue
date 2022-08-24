@@ -27,10 +27,10 @@
               <el-divider direction="vertical" />
             </el-col>
             <el-col :span="4">
-              <el-button class="switch-btn" type="default">理论</el-button>
+              <el-button class="switch-btn" type="default" @click="gotoTheory">理论</el-button>
             </el-col>
             <el-col :span="4">
-              <el-button class="switch-btn" type="default">指南</el-button>
+              <el-button class="switch-btn" type="default" @click="gotoGuild">指南</el-button>
             </el-col>
           </el-row>
         </el-header>
@@ -52,12 +52,20 @@ const state = ref(-1);
 const changeState = (idx: number) => {
   state.value = idx;
   if (idx === 1) {
-    router.push("/");
+    router.push("/hue");
   } else if (idx === 2) {
     router.push("/palette");
   } else if (idx === 3) {
     router.push("/finalpalette");
   }
+};
+
+const gotoTheory = () => {
+  // router.push("/");
+};
+
+const gotoGuild = () => {
+  router.push("/");
 };
 </script>
 
@@ -110,7 +118,7 @@ const changeState = (idx: number) => {
 }
 
 #navigation {
-  width: 60%;
+  width: 100%;
 }
 
 main {

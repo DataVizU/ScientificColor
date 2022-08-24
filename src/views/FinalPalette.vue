@@ -3,7 +3,11 @@
     <el-col>
       <el-row id="title-bar">
         <div id="title">我的色板</div>
-        <el-button type="primary" id="download-btn" v-if="colorStore.palettes.length">
+        <el-button
+          type="primary"
+          id="download-btn"
+          v-if="colorStore.palettes.length"
+        >
           下载色板 <el-icon style="margin-left: 8px"><Download /></el-icon>
         </el-button>
       </el-row>
