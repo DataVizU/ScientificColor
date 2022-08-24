@@ -1,6 +1,12 @@
 <template>
   <el-container>
     <el-col>
+      <el-row id="title-bar">
+        <div id="title">我的色板</div>
+        <el-button type="primary" id="download-btn">
+          下载色板 <el-icon style="margin-left: 8px"><Download /></el-icon>
+        </el-button>
+      </el-row>
       <el-collapse>
         <el-collapse-item
           v-for="(palette, index1) in colorStore.palettes"
@@ -23,22 +29,33 @@
             </el-row>
           </template>
           <el-row class="color-block">
-            <el-col>{{ palette.toString().replace(/,/g, ", ") }}</el-col>
-            <el-col>{{
-              palette
-                .map((hexColor: string) => colorChange.hexToRgb(hexColor).rgb)
-                .toString()
-                .replace(/,/g, ", ")
-            }}</el-col>
+            <div id="color-code">
+              <el-col>{{ palette.toString().replace(/,/g, ", ") }}</el-col>
+              <el-col>{{
+                palette
+                  .map((hexColor: string) => colorChange.hexToRgb(hexColor).rgb)
+                  .toString()
+                  .replace(/,/g, ", ")
+              }}</el-col>
+            </div>
           </el-row>
         </el-collapse-item>
       </el-collapse>
+      <el-row id="all-color-code">
+        <el-col :span="10">
+          {{ allHexColorCode }}
+        </el-col>
+        <el-col :span="13">
+          {{ allRgbColorCode }}
+        </el-col>
+      </el-row>
     </el-col>
   </el-container>
 </template>
 
 <script setup lang="ts">
 import { uesColorStore } from "@/stores/color";
+import { computed } from "vue";
 
 const colorStore = uesColorStore();
 
@@ -106,18 +123,126 @@ const colorChange = {
     }
   },
 };
+
+const allHexColorCode = computed(() => {
+  let hexColorStr = "";
+  colorStore.palettes.forEach((palette: string[]) => {
+    palette.forEach((color: string) => {
+      hexColorStr += color + ", ";
+    });
+    hexColorStr += "\n";
+  });
+  return hexColorStr;
+});
+
+const allRgbColorCode = computed(() => {
+  let rgbColorStr = "";
+  colorStore.palettes.forEach((palette: string[]) => {
+    palette
+      .map((hexColor: string) => colorChange.hexToRgb(hexColor).rgb)
+      .forEach((color: string) => {
+        rgbColorStr += color + ", ";
+      });
+    rgbColorStr += "\n";
+  });
+  return rgbColorStr;
+});
 </script>
 
 <style scoped lang="less">
+@font-face {
+  font-family: "PingFang SC";
+  src: url("../font/苹方黑体-中黑-简.ttf");
+  font-weight: 500;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "PingFang SC";
+  src: url("../font/苹方黑体-准-简.ttf");
+  font-weight: 400;
+  font-style: normal;
+}
+
 .el-container {
   height: 100%;
   width: 100%;
+
+  padding-left: 36px !important;
 }
 
-.color-block {
-  border-radius: 4px;
-  min-height: 36px;
+#title-bar {
   width: 100%;
+  margin-bottom: 36px;
+  align-items: center;
   justify-content: space-between;
+
+  #title {
+    font-family: "PingFang SC", serif;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 20px;
+
+    color: #303133;
+  }
+
+  #download-btn {
+    font-family: "PingFang SC", serif;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 14px;
+
+    letter-spacing: -0.01px;
+
+    color: #ffffff;
+  }
+}
+
+:deep(.el-collapse-item__header) {
+  min-height: 112px;
+
+  .color-block {
+    border-radius: 4px;
+    height: 64px;
+    width: 100%;
+    justify-content: space-between;
+  }
+}
+
+#color-code {
+  background: #f5f7fa;
+  border-radius: 4px;
+  padding: 12px 32px;
+
+  font-family: "PingFang SC", sans-serif;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 13px;
+  text-transform: lowercase;
+
+  color: #303133;
+}
+
+#all-color-code {
+  margin-top: 48px;
+
+  justify-content: space-between;
+
+  font-family: "PingFang SC", sans-serif;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 13px;
+  text-transform: lowercase;
+
+  color: #303133;
+
+  white-space: pre-wrap;
+
+  .el-col {
+    padding: 16px 36px;
+
+    background: #f5f7fa;
+    border-radius: 8px;
+  }
 }
 </style>

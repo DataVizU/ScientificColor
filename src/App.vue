@@ -1,6 +1,6 @@
 <template>
   <div class="common-layout">
-    <el-container>
+    <el-container id="main-app">
       <el-aside width="20vw">
         <SideBar></SideBar>
       </el-aside>
@@ -86,13 +86,19 @@ const changeState = (idx: number) => {
   padding: 1%;
 }
 
+#main-app {
+  padding-right: 0;
+  padding-top: 0;
+}
+
 #split-line {
   width: 3vw;
   border-right: 1px solid #ebeef5;
 }
 
 .main-area {
-  padding-left: 0;
+  width: 72vw;
+  padding: 0;
 }
 
 .el-header {
@@ -109,7 +115,7 @@ const changeState = (idx: number) => {
 
 main {
   height: 100%;
-  padding: 36px 0 0;
+  padding: 36px 48px 0 0;
 }
 
 .el-divider {
