@@ -10,16 +10,16 @@
           <el-row id="navigation">
             <el-col :span="15">
               <el-steps :active="state" simple>
-                <el-step title="生成基色" @click="changeState(1)" :icon="Aim" />
+                <el-step title="生成基色" @click="changeState(1)" :icon="MagicStick" />
                 <el-step
                   title="生成颜色梯度"
                   @click="changeState(2)"
-                  :icon="Orange"
+                  :icon="Coin"
                 />
                 <el-step
                   title="生成色板"
                   @click="changeState(3)"
-                  :icon="Memo"
+                  :icon="Orange"
                 />
               </el-steps>
             </el-col>
@@ -27,10 +27,14 @@
               <el-divider direction="vertical" />
             </el-col>
             <el-col :span="4">
-              <el-button class="switch-btn" type="default" @click="gotoTheory">理论</el-button>
+              <el-button class="switch-btn" type="default" @click="gotoTheory">
+                理论
+              </el-button>
             </el-col>
             <el-col :span="4">
-              <el-button class="switch-btn" type="default" @click="gotoGuild">指南</el-button>
+              <el-button class="switch-btn" type="default" @click="gotoGuild">
+                指南
+              </el-button>
             </el-col>
           </el-row>
         </el-header>
@@ -44,7 +48,7 @@
 
 <script setup lang="ts">
 import SideBar from "@/views/SideBar.vue";
-import { Aim, Orange, Memo } from "@element-plus/icons-vue";
+import { MagicStick, Coin, Orange } from "@element-plus/icons-vue";
 import { ref } from "vue";
 import router from "@/router";
 

@@ -3,13 +3,7 @@
     <el-col>
       <el-row id="title-bar">
         <div id="title">我的色板</div>
-        <el-button
-          type="primary"
-          id="download-btn"
-          v-if="colorStore.palettes.length"
-        >
-          下载色板 <el-icon style="margin-left: 8px"><Download /></el-icon>
-        </el-button>
+        <div id="tip">右键点击色块复制对应色号</div>
       </el-row>
       <el-collapse>
         <el-collapse-item
@@ -27,7 +21,7 @@
                 <div
                   class="color-block"
                   :style="{ background: item }"
-                  :title="item"
+                  @contextmenu.prevent="copy(item)"
                 ></div>
               </el-col>
             </el-row>
@@ -60,6 +54,9 @@
 <script setup lang="ts">
 import { uesColorStore } from "@/stores/color";
 import { computed } from "vue";
+import useClipboard from "vue-clipboard3";
+
+const { toClipboard } = useClipboard();
 
 const colorStore = uesColorStore();
 
@@ -128,6 +125,26 @@ const colorChange = {
   },
 };
 
+const copy = async (colorCode: string) => {
+  try {
+    await toClipboard(colorCode);
+    /**
+     * 自动引入的
+     */
+    // eslint-disable-next-line no-undef
+    ElMessage({
+      message: `成功复制色号 ${colorCode}`,
+      type: "success",
+    });
+  } catch (e) {
+    // eslint-disable-next-line no-undef
+    ElMessage({
+      message: "复制出错",
+      type: "error",
+    });
+  }
+};
+
 const allHexColorCode = computed(() => {
   let hexColorStr = "";
   colorStore.palettes.forEach((palette: string[]) => {
@@ -190,15 +207,14 @@ const allRgbColorCode = computed(() => {
     color: #303133;
   }
 
-  #download-btn {
+  #tip {
     font-family: "PingFang SC", serif;
+    font-size: 12px;
     font-style: normal;
-    font-weight: 500;
-    font-size: 14px;
 
     letter-spacing: -0.01px;
 
-    color: #ffffff;
+    color: #909399;
   }
 }
 
