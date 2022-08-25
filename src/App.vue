@@ -8,9 +8,13 @@
       <el-container class="main-area">
         <el-header>
           <el-row id="navigation">
-            <el-col :span="15">
+            <el-col :span="13">
               <el-steps :active="state" simple>
-                <el-step title="生成基色" @click="changeState(1)" :icon="MagicStick" />
+                <el-step
+                  title="生成基色"
+                  @click="changeState(1)"
+                  :icon="MagicStick"
+                />
                 <el-step
                   title="生成颜色梯度"
                   @click="changeState(2)"
@@ -35,6 +39,11 @@
               <el-button class="switch-btn" type="default" @click="gotoGuild">
                 指南
               </el-button>
+            </el-col>
+            <el-col :span="2" id="github">
+              <a href="https://github.com/DataVizU/ScientificColor" target="_blank">
+                <img src="./pics/github.svg" alt="github" />
+              </a>
             </el-col>
           </el-row>
         </el-header>
@@ -123,6 +132,12 @@ const gotoGuild = () => {
 
 #navigation {
   width: 100%;
+}
+
+#github {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
 }
 
 main {
