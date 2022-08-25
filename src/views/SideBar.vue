@@ -122,6 +122,7 @@
 <script setup lang="ts">
 import { uesColorStore } from "@/stores/color";
 import { ref } from "vue";
+import router from "@/router";
 
 const colorStore = uesColorStore();
 
@@ -193,6 +194,9 @@ const deletePaletteColor = (index: number) => {
 
 const setNowColor = (index: number) => {
   colorStore.setNowColor(colorStore.basicColor[index]);
+  if (!window.location.href.includes("palette")) {
+    router.push("/palette");
+  }
 };
 </script>
 
