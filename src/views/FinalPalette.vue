@@ -227,6 +227,8 @@ const allRgbColorCode = computed(() => {
 }
 
 #color-code {
+  width: 100%;
+
   background: #f5f7fa;
   border-radius: 4px;
   padding: 12px 32px;
