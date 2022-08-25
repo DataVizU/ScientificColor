@@ -54,7 +54,6 @@
 <script setup lang="ts">
 import { uesColorStore } from "@/stores/color";
 import { computed } from "vue";
-import { ElMessage } from "element-plus";
 import useClipboard from "vue-clipboard3";
 
 const { toClipboard } = useClipboard();
@@ -129,11 +128,13 @@ const colorChange = {
 const copy = async (colorCode: string) => {
   try {
     await toClipboard(colorCode);
+    // eslint-disable-next-line no-undef
     ElMessage({
       message: `成功复制色号 ${colorCode}`,
       type: "success",
     });
   } catch (e) {
+    // eslint-disable-next-line no-undef
     ElMessage({
       message: "复制出错",
       type: "error",
