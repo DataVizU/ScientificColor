@@ -31,9 +31,18 @@
               <el-divider direction="vertical" />
             </el-col>
             <el-col :span="4">
-              <el-button class="switch-btn" type="default" @click="gotoTheory">
-                理论
-              </el-button>
+              <a
+                href="https://datavisu.notion.site/f11cd24406da470ca2ec91f0dc676c12"
+                target="_blank"
+              >
+                <el-button
+                  class="switch-btn"
+                  type="default"
+                  @click="gotoTheory"
+                >
+                  理论
+                </el-button>
+              </a>
             </el-col>
             <el-col :span="4">
               <el-button class="switch-btn" type="default" @click="gotoGuild">
@@ -41,7 +50,10 @@
               </el-button>
             </el-col>
             <el-col :span="2" id="github">
-              <a href="https://github.com/DataVizU/ScientificColor" target="_blank">
+              <a
+                href="https://github.com/DataVizU/ScientificColor"
+                target="_blank"
+              >
                 <img src="./pics/github.svg" alt="github" />
               </a>
             </el-col>
@@ -132,6 +144,10 @@ const gotoGuild = () => {
 
 #navigation {
   width: 100%;
+
+  a {
+    text-decoration: none;
+  }
 }
 
 #github {
