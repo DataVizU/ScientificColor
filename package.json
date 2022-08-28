@@ -1,6 +1,6 @@
 {
   "name": "scientific-color",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "scripts": {
     "dev": "vite",
     "build": "run-p build-only",
