@@ -1,11 +1,11 @@
-import { createRouter, createWebHistory } from "vue-router";
+import { createRouter, createWebHashHistory } from "vue-router";
 import BasicHue from "@/views/BasicHue.vue";
 import PaletteKnives from "@/views/PaletteKnives.vue";
 import FinalPalette from "@/views/FinalPalette.vue";
 import HandBook from "@/views/HandBook.vue";
 
 const router = createRouter({
-  history: createWebHistory(import.meta.env.BASE_URL),
+  history: createWebHashHistory(import.meta.env.BASE_URL),
   routes: [
     {
       path: "/",
