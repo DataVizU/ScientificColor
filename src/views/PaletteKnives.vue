@@ -11,6 +11,7 @@ import { uesColorStore } from "@/stores/color";
 import { computed } from "vue";
 import ChromaJs from "./ChromaJs.vue"
 
+
 const colorStore = uesColorStore();
 const baseUrl = computed(() => {
   if (window.location.href.includes("datavizu.app")) {
