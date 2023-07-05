@@ -77,13 +77,38 @@
       <div class="right half">
         <h3 class="title">Palette</h3>
         <hr>
+        <div class="choose">
+          <input>
+          <div class="colors">colors</div>
+          <select>
+            <option value="">soft(k-Means)</option>
+            <option value="hard(Force vector)">hard(Force vector)</option>
+          </select>
+        </div>
+        <button>Make a palette</button>
+        <div class="vessel">
+          <div></div>
+          <div></div>
+          <div></div>
+          <div></div>
+          <div></div>
+        </div>
       </div>
     </div>
   </div>
 </template>
 
 <style scoped lang="scss">
-@import "../node_modules/bootstrap/scss/bootstrap";
+
+@mixin input-focus{
+  box-shadow: 0 0 8px 2px rgba(73,228,253,0.3);
+  border-color: rgb(73,228,253);
+  transition: 0.3s;
+  outline: none;
+}
+
+
+
 .all{
   width: 100%;
   height: 100%;
@@ -158,11 +183,69 @@
     padding: 20px;
     display: flex;
     justify-content: space-between;
+    @media (max-width: 1000px) {
+      flex-wrap: wrap;
+    }
+
     >.left{
       width: 67%;
+      @media (max-width: 1000px) {
+        width: 100%;
+      }
     }
     >.right{
       width: 30%;
+      @media (max-width: 1000px) {
+        width: 100%;
+      }
+      >.choose{
+        display: flex;
+        width: 100%;
+        height: 30px;
+        line-height: 30px;
+        >input{
+          width: 30px;
+          &:focus{
+            @include input-focus();
+          }
+
+        }
+        >.colors{
+          border: solid 1px;
+          height: 30px;
+          width: 50px;
+          margin-left: -2px;
+          font-size: 12px;
+          text-align: center;
+        }
+        >select{
+          height: 30px;
+        }
+      }
+      >button{
+        margin-top: 10px;
+        width: 100%;
+        border-radius: 6px;
+        border: 1px rgba(0,0,0,0.3) solid;
+        &:hover,&:focus{
+          filter: brightness(97%);
+          transition: 0.3s;
+        }
+      }
+      >.vessel{
+        width: 100%;
+        display: flex;
+        flex-wrap: wrap;
+        margin-top: 10px;
+        >div{
+          height: 80px;
+          width: 50px;
+          // background-color: red;
+          background-image: url("../pics/palette_hole.png");
+          margin-right: 10px;
+          margin-top: 10px;
+        }
+      }
     }
     >.half{
 
@@ -194,9 +277,7 @@
                 width: 40px;
                 outline: none;
                 &:focus{
-                  box-shadow: 0 0 8px 2px rgba(73,228,253,0.3);
-                  border-color: rgb(73,228,253);
-                  transition: 0.3s;
+                  @include input-focus();
                 }
               }
               >.first{
@@ -210,6 +291,7 @@
         }
       }
     }
+
   }
 }
 

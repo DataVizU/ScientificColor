@@ -1,7 +1,7 @@
 <template>
     <div class="main">
         <div class="center">
-            <div class="title">
+          <div class="title">
                 <div class="title1">Chroma.js Color Palette Helper</div>
                 <div class="title2">This 
                     <a>chroma.js</a>
@@ -10,7 +10,7 @@
                         
                 </div>
             </div>
-            <div class="box">
+          <div class="box">
                 <div class="head">
                     <div class="head-title">
                         What kind of palette do you want to create?
@@ -37,18 +37,18 @@
                     </div>
                 </div>
             </div>
-            <div class="box">
+          <div class="box">
               <div class="head">
                 <div class="head-title">Select and arrange input colors</div>
               </div>
-              <div class="mb-3">
-                <input type="" class="form-control" id="exampleFormControlInput1" />
-                <!-- <button type="button" class="btn btn-primary position-relative">
-                    Profile
-                    </button> -->
-           
-                
-            </div>
+              <div class="color-input"  tabindex="0">
+                <div>
+                  <input type="text" v-model="state.init" class="form-control" id="exampleFormControlInput1" />
+<!--                  <div class="colors" v-if="isFocus===false">-->
+<!--                    <div v-for="color in state.init" :key="color" :style="{backgroundColor:color}">{{color}}</div>-->
+<!--                  </div>-->
+                </div>
+              </div>
 
             </div>
           <div class="box">
@@ -58,14 +58,14 @@
             <div class="middle">
               <div class="middle-left">
                 <div class="form-check">
-                  <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" checked>
+                  <input class="form-check-input" type="checkbox" v-model="method.lightness" value="" id="flexCheckDefault">
                   <label class="form-check-label" for="flexCheckDefault">
                     correct lightness
 
                   </label>
                 </div>
                 <div class="form-check">
-                  <input class="form-check-input" type="checkbox" value="" id="flexCheckChecked" checked>
+                  <input class="form-check-input" type="checkbox" v-model="method.bezier" id="flexCheckChecked" checked>
                   <label class="form-check-label" for="flexCheckChecked">
                     bezier interpolation
                   </label>
@@ -76,7 +76,7 @@
                 <div class="simulate">
                   <div class="key">simulate:</div>
                   <div class="btn-group2">
-                    <button>normal</button>
+                    <button >normal</button>
                     <button>debut.</button>
                     <button>prot.</button>
                     <button>trit.</button>
@@ -88,38 +88,98 @@
 
             </div>
             <div class="palette">
-              <div v-for="(color, index) in colors"  class="palette-colors" :style="{backgroundColor:colors[index]}" :key="index">
+              <div v-for="(color, index) in range"  class="palette-colors" :style="{backgroundColor:range[index]}" :key="index"></div>
+            </div>
+            <div class="pics">
+              <div class="pic" id="lightness">
+                <h6>lightness</h6>
+
               </div>
+              <div class="pic" id="saturation">
+                <h6>saturation</h6>
 
+              </div>
+              <div class="pic" id="hue">
+                <h6>hue</h6>
 
+              </div>
             </div>
           </div>
         </div>
     </div>
 </template>
 
-<script>
-import chroma from "chroma-js";
+<script setup >
+
 import {reactive} from "vue";
+import {ref} from "vue";
+import * as echarts from "echarts";
+import { watch } from "vue";
+import chroma from "chroma-js"
 
-export default{
-    setup(){
-        const state = reactive({
-            number:9,
-            init:"#00429d",
+const colors=ref([]);
+const state=reactive({
+  init:"#00429d，#ffffff",
+  number:9
 
-        });
-        const colors=["red","blue","yellow"];
-        // const initColor = chroma(state.init);
-        // for(let i = 0; i < state.number;i++){
-        //     // colors.push(initColor.brighten(0.2).hex());
-        // }
-        return{
-            state,
-            colors
-        }
-    }
-}
+})
+const method=reactive({
+  lightness:true,
+  bezier:true
+})
+const datal=[],datas=[],datah=[];
+const range=ref([]);
+watch([colors,method,state],([colors,method,state],[])=>{
+  colors.value=state.init.split("，");
+  let scale;
+  if(method.bezier===true) scale=chroma.bezier(colors);
+  else scale=chroma.scale(colors);
+  // if(method.lightness===true) scale=scale.correctLightness();报错，没有这个函数
+  const newRange=[];
+  for(let i=0;i<state.number;i++){
+    newRange.push(scale(i/state.number).hex());
+    const tmparr=chroma(scale(i/state.number).hex()).hsl();
+    datah.push(tmparr[0]),datas.push(tmparr[1]),datal.push(tmparr[2]);
+  }
+  range.value = newRange;
+  // console.log(colors);
+  // console.log("YES");
+  // console.log(state);
+})
+
+// const chartl=echarts.init(document.getElementById("lightness"));
+// chartl.setOption( {
+//   xAxis: {
+//     type: 'category',
+//     data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+//   },
+//   yAxis: {
+//     type: 'value'
+//   },
+//   series: [
+//     {
+//       name: 'Step Start',
+//       type: 'line',
+//       step: 'start',
+//       data: [120, 132, 101, 134, 90, 230, 210]
+//     },
+//     {
+//       name: 'Step Middle',
+//       type: 'line',
+//       step: 'middle',
+//       data: [220, 282, 201, 234, 290, 430, 410]
+//     },
+//     {
+//       name: 'Step End',
+//       type: 'line',
+//       step: 'end',
+//       data: [450, 432, 401, 454, 590, 530, 510]
+//     }
+//   ]
+// })
+
+colors.value=state.init.split("，");
+
 
 </script>
 
@@ -160,6 +220,31 @@ $btn-color:rgb(108,117,125);
                 box-shadow: 0 0 2px 2px rgba(0,0,0,0.1);
                 padding: 20px;
                 box-sizing: border-box;
+              >.color-input{
+                position: relative;
+
+                >div{
+                  >.colors{
+                    position: absolute;
+                    top: 8px;
+                    display: flex;
+                    left: 10px;
+                    >div{
+                      border-radius: 5px;
+                      margin-right: 10px;
+                      box-shadow: 0 0 3px 1px rgba(0,0,0,0.3);
+                      width: 75px;
+                      height: 23px;
+                      display: flex;
+                      justify-content: center;
+                      align-items: center;
+
+                    }
+                  }
+                }
+
+
+              }
                 .head{
                     .head-title{
                         font-size: 20px;
@@ -170,6 +255,9 @@ $btn-color:rgb(108,117,125);
                 .middle{
                     display: flex;
                     justify-content: space-between;
+                  @media (max-width: 1000px) {
+                    flex-wrap: wrap;
+                  }
                     .middle-right{
                       margin-top: -10px;
                       margin-bottom: 20px;
@@ -233,6 +321,7 @@ $btn-color:rgb(108,117,125);
                         // background-color: v-bind("state.color");
                     }
                 }
+
                 #color{
                     height: 30px;
                     width: 100%;
@@ -243,8 +332,12 @@ $btn-color:rgb(108,117,125);
                     }
                 }
                 .box-main{
-                    display: flex;
-                    max-width: 100%;
+                  display: flex;
+
+                  @media (max-width: 1000px) {
+                    flex-wrap: wrap;
+                  }
+                  max-width: 100%;
                     .left{
                         width: 500px;
                         display: flex;
@@ -265,6 +358,22 @@ $btn-color:rgb(108,117,125);
                         }
                     }
                 }
+              .pics{
+                display: flex;
+                margin-top: 20px;
+                @media (max-width: 1000px) {
+                  flex-wrap: wrap;
+                }
+                width: 100%;
+                >.pic{
+                  width: 33.3%;
+                  height: 250px;
+                  @media (max-width: 1000px) {
+                    width: 100%;
+                  }
+                }
+              }
+
             }
         }
 
