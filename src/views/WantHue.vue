@@ -6,16 +6,16 @@
 <template>
   <div class="all">
     <div class="navbar">
-      <div class="nav nav-home">I want hue</div>
-      <div class="nav">Tutorials</div>
-      <div class="nav">Examples</div>
-      <div class="nav">Theory</div>
-      <div class="nav">Experiment</div>
-      <div class="nav">Old version</div>
-      <div class="nav">Github</div>
-      <div class="nav">Issues</div>
-      <div class="nav">npm</div>
-      <div class="nav">Medialab Tools</div>
+      <a href="http://vis4.net/blog/posts/mastering-multi-hued-color-scales/" class="nav nav-home">I want hue</a>
+      <a class="nav">Tutorials</a>
+      <a class="nav">Examples</a>
+      <a class="nav">Theory</a>
+      <a class="nav">Experiment</a>
+      <a class="nav">Old version</a>
+      <a class="nav">Github</a>
+      <a class="nav">Issues</a>
+      <a class="nav">npm</a>
+      <a class="nav">Medialab Tools</a>
     </div>
     <div class="middle">
       <div class="left">
@@ -45,27 +45,39 @@
             <div class="range">
               <div class="arg">
                 <div class="key">H</div>
-                <input class="first">
-                <canvas></canvas>
-                <input class="second">
+                <input class="first" :value="stateh.from">
+                <div class="color-range">
+                  <input type="range" max="360" min="0" id="rangeh1" value="360">
+                  <input type="range" max="360" min="0" id="rangeh2" value="0">
+                </div>
+
+                <input class="second" :value="stateh.to*3.6">
               </div>
 
             </div>
             <div class="range">
               <div class="arg">
-                <div class="key">c</div>
-                <input class="first">
-                <canvas></canvas>
-                <input class="second">
+                <div class="key">C</div>
+                <input class="first" :value="statec.from">
+                <div class="color-range">
+                  <input type="range" max="360" min="0" id="rangec1" value="360">
+                  <input type="range" max="360" min="0" id="rangec2" value="0">
+                </div>
+
+                <input class="second" :value="statec.to">
               </div>
 
             </div>
             <div class="range">
               <div class="arg">
                 <div class="key">L</div>
-                <input class="first">
-                <canvas></canvas>
-                <input class="second">
+                <input class="first" :value="statel.from">
+                <div class="color-range">
+                  <input type="range" max="360" min="0" id="rangel1" value="360">
+                  <input type="range" max="360" min="0" id="rangel2" value="0">
+                </div>
+
+                <input class="second" :value="statel.to">
               </div>
 
             </div>
@@ -78,7 +90,7 @@
         <h3 class="title">Palette</h3>
         <hr>
         <div class="choose">
-          <input>
+          <input v-model="num">
           <div class="colors">colors</div>
           <select>
             <option value="">soft(k-Means)</option>
@@ -87,16 +99,54 @@
         </div>
         <button>Make a palette</button>
         <div class="vessel">
-          <div></div>
-          <div></div>
-          <div></div>
-          <div></div>
-          <div></div>
+          <div v-for="index of num" :key="index"></div>
         </div>
       </div>
     </div>
   </div>
 </template>
+
+<script setup>
+import { onMounted, reactive, ref, watch } from "vue";
+
+const num=ref(4)
+const stateh = reactive({
+  from:0,
+  to:100
+})
+const statec=reactive({
+  from:0,
+  to:100
+})
+const statel=reactive({
+  from:0,
+  to:100
+})
+onMounted(()=>{
+  const rangeh1=document.getElementById("rangeh1");
+  const rangeh2=document.getElementById("rangeh2");
+  const rangec1=document.getElementById("rangec1");
+  const rangec2=document.getElementById("rangec2");
+  const rangel1=document.getElementById("rangel1");
+  const rangel2=document.getElementById("rangel2");
+  setRange(rangeh1,rangeh2,stateh);
+  setRange(rangec1,rangec2,statec);
+  setRange(rangel1,rangel2,statel);
+
+})
+
+function setRange(range1,range2,state){
+  range1.addEventListener('input', function () {
+    state.to = parseInt(100 * (this.value - this.min) / (this.max - this.min));
+    // if(this.value<stateh.from) this.value=stateh.from;
+  });
+  range2.addEventListener("input",function(){
+    state.from = parseInt(100 * (this.value - this.min)/(this.max - this.min));
+    // if(this.value>stateh.to) this.value=stateh.to;
+  });
+}
+
+</script>
 
 <style scoped lang="scss">
 
@@ -127,6 +177,7 @@
       min-width: 50px;
       max-height: 40px;
       white-space: nowrap;
+      text-decoration: none;
 
       &:hover{
         color: white;
@@ -283,8 +334,54 @@
               >.first{
                 margin-left: -3px;
               }
-              >canvas{
+              >.color-range{
                 width: 200px;
+                position: relative;
+                #rangeh2{
+                  &::-webkit-slider-runnable-track{
+                    background: linear-gradient(to right, transparent calc(1% * v-bind("stateh.from")), blue calc(1% * v-bind("stateh.from")) calc(1% * (v-bind("stateh.to"))), transparent 0%);
+
+                  }
+                }
+                #rangec2{
+                  &::-webkit-slider-runnable-track{
+                    background: linear-gradient(to right, transparent calc(1% * v-bind("statec.from")), blue calc(1% * v-bind("statec.from")) calc(1% * (v-bind("statec.to"))), transparent 0%);
+
+                  }
+                }
+                #rangel2{
+                &::-webkit-slider-runnable-track{
+                  background: linear-gradient(to right, transparent calc(1% * v-bind("statel.from")), blue calc(1% * v-bind("statel.from")) calc(1% * (v-bind("statel.to"))), transparent 0%);
+                }
+                }
+                >input{
+                  position: absolute;
+                  height: 30px;
+                  pointer-events: none;
+                  width: 100%;
+                  -webkit-appearance: none;
+                  background: none;
+
+                  &::-moz-range-track{
+                    background: none;
+                    position: relative;
+                    height: 30px;
+                    z-index: -1;
+                  }
+                  &::-webkit-slider-thumb{
+                    pointer-events: auto;
+                    -webkit-appearance: none;
+                    height: 30px;
+                    position: relative;
+                    width: 10px;
+                    border-left: 10px black solid;
+                    z-index: 1;
+                  }
+                  &::-moz-range-thumb{
+                    pointer-events: auto;
+                  }
+                }
+
               }
             }
           }

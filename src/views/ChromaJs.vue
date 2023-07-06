@@ -4,9 +4,9 @@
           <div class="title">
                 <div class="title1">Chroma.js Color Palette Helper</div>
                 <div class="title2">This 
-                    <a>chroma.js</a>
+                    <a href="https://github.com/gka/chroma.js">chroma.js</a>
                     -powered tool is here to help us
-                    <a>mastering multi-hued, multi-stops color scales.</a> 
+                    <a href="http://vis4.net/blog/posts/mastering-multi-hued-color-scales/">mastering multi-hued, multi-stops color scales.</a>
                         
                 </div>
             </div>
@@ -33,7 +33,8 @@
                     </div>
                     <div class="left">
                         <div class="key">Number of colors</div>
-                        <input type="number" id="number"  v-model="state.number" />
+                        <input type="number" id="number" v-bind:min="colors.length" v-model="state.number" />
+
                     </div>
                 </div>
             </div>
@@ -58,14 +59,14 @@
             <div class="middle">
               <div class="middle-left">
                 <div class="form-check">
-                  <input class="form-check-input" type="checkbox" v-model="method.lightness" value="" id="flexCheckDefault">
+                  <input class="form-check-input" type="checkbox"  v-model="method.lightness" value="" id="flexCheckDefault">
                   <label class="form-check-label" for="flexCheckDefault">
                     correct lightness
 
                   </label>
                 </div>
                 <div class="form-check">
-                  <input class="form-check-input" type="checkbox" v-model="method.bezier" id="flexCheckChecked" checked>
+                  <input class="form-check-input" type="checkbox" v-model="method.bezier" id="flexCheckChecked" >
                   <label class="form-check-label" for="flexCheckChecked">
                     bezier interpolation
                   </label>
@@ -91,16 +92,16 @@
               <div v-for="(color, index) in range"  class="palette-colors" :style="{backgroundColor:range[index]}" :key="index"></div>
             </div>
             <div class="pics">
-              <div class="pic" id="lightness">
-                <h6>lightness</h6>
+              <div class="pic" id="lightness" >
+
 
               </div>
               <div class="pic" id="saturation">
-                <h6>saturation</h6>
+
 
               </div>
               <div class="pic" id="hue">
-                <h6>hue</h6>
+
 
               </div>
             </div>
@@ -111,7 +112,7 @@
 
 <script setup >
 
-import {reactive} from "vue";
+import { onMounted, reactive } from "vue";
 import {ref} from "vue";
 import * as echarts from "echarts";
 import { watch } from "vue";
@@ -127,59 +128,94 @@ const method=reactive({
   lightness:true,
   bezier:true
 })
-const datal=[],datas=[],datah=[];
+
+const datah=ref([]),datas=ref([]),datal=ref([]);
 const range=ref([]);
+const reg=/#([a-fA-F0-9]{6})/g;
+
 watch([colors,method,state],([colors,method,state],[])=>{
-  colors.value=state.init.split("，");
+  colors.value=state.init.match(reg);
   let scale;
-  if(method.bezier===true) scale=chroma.bezier(colors);
-  else scale=chroma.scale(colors);
-  // if(method.lightness===true) scale=scale.correctLightness();报错，没有这个函数
-  const newRange=[];
+  if(method.bezier===true && colors.value.length > 1) scale=chroma.bezier(colors.value).scale();
+  else  scale=chroma.scale(colors.value);
+  if(method.lightness===true) scale=scale.correctLightness();
+  range.value=scale.colors(state.number);
+  const newh=[],news=[],newl=[];
   for(let i=0;i<state.number;i++){
-    newRange.push(scale(i/state.number).hex());
-    const tmparr=chroma(scale(i/state.number).hex()).hsl();
-    datah.push(tmparr[0]),datas.push(tmparr[1]),datal.push(tmparr[2]);
+    const tmparr=chroma(range.value[i]).hsl();
+    newh.push(tmparr[0]),news.push(tmparr[1]*100),newl.push(tmparr[2]*100);
+
   }
-  range.value = newRange;
-  // console.log(colors);
-  // console.log("YES");
-  // console.log(state);
+  datal.value=newl,datas.value=news,datah.value=newh;
+  console.log(datal);
+},)
+
+let charth,charts,chartl;
+
+onMounted(()=> {
+  chartl = echarts.init(document.getElementById("lightness"));
+  charts = echarts.init(document.getElementById("saturation"));
+  charth = echarts.init(document.getElementById("hue"),)
+  let optionl = addOption(datal,"lightness")
+  let options = addOption(datas,"saturation");
+  let optionh = addOption(datah,"hue");
+  watch([datal,datas,datah],([datal,datas,datah],[])=>{
+    optionl = addOption(datal,"lightness")
+    options = addOption(datas,"saturation");
+    optionh = addOption(datah,"hue");
+    chartl.setOption(optionl,);
+    console.log(optionl);
+    console.log(datal);
+    charts.setOption(options,);
+    charth.setOption(optionh,);
+  })
+
+  window.addEventListener("resize", () => {
+    chartl.resize();
+    charts.resize();
+    charth.resize();
+  })
+  chartl.setOption(optionl,);
+  charts.setOption(options,);
+  charth.setOption(optionh,)
+
 })
 
-// const chartl=echarts.init(document.getElementById("lightness"));
-// chartl.setOption( {
-//   xAxis: {
-//     type: 'category',
-//     data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
-//   },
-//   yAxis: {
-//     type: 'value'
-//   },
-//   series: [
-//     {
-//       name: 'Step Start',
-//       type: 'line',
-//       step: 'start',
-//       data: [120, 132, 101, 134, 90, 230, 210]
-//     },
-//     {
-//       name: 'Step Middle',
-//       type: 'line',
-//       step: 'middle',
-//       data: [220, 282, 201, 234, 290, 430, 410]
-//     },
-//     {
-//       name: 'Step End',
-//       type: 'line',
-//       step: 'end',
-//       data: [450, 432, 401, 454, 590, 530, 510]
-//     }
-//   ]
-// })
 
-colors.value=state.init.split("，");
 
+colors.value=state.init.match(reg)
+function addOption(data,title){
+  return{
+    title: {
+      text: title
+    },
+    xAxis: {
+      show: false,
+      boundryGap: false,
+      type:"category"
+
+    },
+    grid:{
+      left:40
+    },
+    yAxis: {
+      type: 'value',
+      boundryGap: false,
+    },
+    series: [
+      {
+        data: data.value,
+        step: "middle",
+        type: "line",
+        symbol: "none",
+        lineStyle: {
+          color: "black"
+        }
+      }
+    ]
+
+  };
+}
 
 </script>
 
@@ -366,7 +402,7 @@ $btn-color:rgb(108,117,125);
                 }
                 width: 100%;
                 >.pic{
-                  width: 33.3%;
+                  width: calc(100%/3);
                   height: 250px;
                   @media (max-width: 1000px) {
                     width: 100%;
