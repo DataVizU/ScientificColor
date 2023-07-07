@@ -47,8 +47,8 @@
                 <div class="key">H</div>
                 <input class="first" :value="stateh.from">
                 <div class="color-range">
-                  <input type="range" max="360" min="0" id="rangeh1" value="360">
-                  <input type="range" max="360" min="0" id="rangeh2" value="0">
+                  <input type="range" max="360" min="0" ref="rangeh1" value="360" @input="setInput(rangeh1,stateh.to)">
+                  <input type="range" max="360" min="0" ref="rangeh2" value="0" @input="setInput(rangeh2,stateh.from)">
                 </div>
 
                 <input class="second" :value="stateh.to*3.6">
@@ -60,8 +60,8 @@
                 <div class="key">C</div>
                 <input class="first" :value="statec.from">
                 <div class="color-range">
-                  <input type="range" max="360" min="0" id="rangec1" value="360">
-                  <input type="range" max="360" min="0" id="rangec2" value="0">
+                  <input type="range" max="360" min="0" ref="rangec1" value="360" @input="setInput(rangec1,statec.to)">
+                  <input type="range" max="360" min="0" ref="rangec2" value="0" @input="setInput(rangec1,statec.from)">
                 </div>
 
                 <input class="second" :value="statec.to">
@@ -73,8 +73,8 @@
                 <div class="key">L</div>
                 <input class="first" :value="statel.from">
                 <div class="color-range">
-                  <input type="range" max="360" min="0" id="rangel1" value="360">
-                  <input type="range" max="360" min="0" id="rangel2" value="0">
+                  <input type="range" max="360" min="0" ref="rangel1" value="360" @input="setInput(rangel1,statel.to)">
+                  <input type="range" max="360" min="0" ref="rangel2" value="0" @input="setInput(rangel1,statel.from)">
                 </div>
 
                 <input class="second" :value="statel.to">
@@ -92,14 +92,16 @@
         <div class="choose">
           <input v-model="num">
           <div class="colors">colors</div>
-          <select>
-            <option value="">soft(k-Means)</option>
+          <select ref="clustering" >
+            <option value="soft(k-Means)">soft(k-Means)</option>
             <option value="hard(Force vector)">hard(Force vector)</option>
           </select>
         </div>
-        <button>Make a palette</button>
+        <button @click="makePalette">Make a palette</button>
         <div class="vessel">
-          <div v-for="index of num" :key="index"></div>
+          <div v-for="index of num" :key="index" >
+            <div ref="palettes" class="palettes"></div>
+          </div>
         </div>
       </div>
     </div>
@@ -108,8 +110,16 @@
 
 <script setup>
 import { onMounted, reactive, ref, watch } from "vue";
+import iwanthue from "iwanthue";
 
-const num=ref(4)
+
+
+const palettes=ref();
+const num=ref(4);
+const clustering=ref();
+
+
+
 const stateh = reactive({
   from:0,
   to:100
@@ -122,28 +132,39 @@ const statel=reactive({
   from:0,
   to:100
 })
+const rangeh1=ref();
+const rangeh2=ref();
+const rangec1=ref();
+const rangec2=ref();
+const rangel1=ref();
+const rangel2=ref();
+
 onMounted(()=>{
-  const rangeh1=document.getElementById("rangeh1");
-  const rangeh2=document.getElementById("rangeh2");
-  const rangec1=document.getElementById("rangec1");
-  const rangec2=document.getElementById("rangec2");
-  const rangel1=document.getElementById("rangel1");
-  const rangel2=document.getElementById("rangel2");
   setRange(rangeh1,rangeh2,stateh);
   setRange(rangec1,rangec2,statec);
   setRange(rangel1,rangel2,statel);
 
 })
-
 function setRange(range1,range2,state){
-  range1.addEventListener('input', function () {
-    state.to = parseInt(100 * (this.value - this.min) / (this.max - this.min));
-    // if(this.value<stateh.from) this.value=stateh.from;
+  setInput(range1,state.to)
+  setInput(range2,state.from);
+}
+
+function setInput(range,point){
+  console.log(range.value);
+    point = parseInt(100 * (range.value - range.min) / (range.max - range.min));
+}
+
+function makePalette(){
+  let cluster;
+  if(clustering.value.value==="soft(k-Means)") cluster="force-vector";
+  else cluster="k-means";
+  const paletteColor=iwanthue(num.value,{
+    clustering:cluster
   });
-  range2.addEventListener("input",function(){
-    state.from = parseInt(100 * (this.value - this.min)/(this.max - this.min));
-    // if(this.value>stateh.to) this.value=stateh.to;
-  });
+  for(const[index,item] of palettes.value.entries()){
+    item.style.backgroundColor=paletteColor[index];
+  }
 }
 
 </script>
@@ -291,10 +312,17 @@ function setRange(range1,range2,state){
         >div{
           height: 80px;
           width: 50px;
-          // background-color: red;
           background-image: url("../pics/palette_hole.png");
           margin-right: 10px;
           margin-top: 10px;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          >.palettes{
+            border-radius: 5px;
+            height: 80%;
+            width: 80%;
+          }
         }
       }
     }
