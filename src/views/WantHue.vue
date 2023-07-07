@@ -33,12 +33,26 @@
         <hr>
         <div class="space-main">
           <div class="left">
-            <select>
-              <option value="">Default present</option>
-              <option value="All colors">All colors</option>
-              <option value="Colorblind friendly">Colorblind friendly</option>
-              <option value="Fancy">Fancy</option>
-              <option value="Shades">Shades</option>
+            <select ref="type">
+              <option value="default">Default present</option>
+              <option value="all">All colors</option>
+              <option value="colorblind">Colorblind friendly</option>
+              <option value="fancy-light">Fancy(light background)</option>
+              <option value="fancy-dark">Fancy(dark background)</option>
+              <option value="shades">Shades</option>
+              <option value="tarnish">Tarnish</option>
+              <option value="pastel">Pastel</option>
+              <option value="pimp">Pimp</option>
+              <option value="intense">Intense</option>
+              <option value="fluo">Fluo</option>
+              <option value="red-roses">Red Roses</option>
+              <option value="ochre-sand">Ochre Sand</option>
+              <option value="yellow-lime">Yellow Lime</option>
+              <option value="green-mint">Green Mint</option>
+              <option value="ice-cube">Ice Cube</option>
+              <option value="blue-ocean">Blue Ocean</option>
+              <option value="indigo-night">Indigo Night</option>
+              <option value="purple-wine">Purple Wine</option>
 
 
             </select>
@@ -46,9 +60,9 @@
               <div class="arg">
                 <div class="key">H</div>
                 <input class="first" :value="stateh.from">
-                <div class="color-range">
-                  <input type="range" max="360" min="0" ref="rangeh1" value="360" @input="setInput(rangeh1,stateh.to)">
-                  <input type="range" max="360" min="0" ref="rangeh2" value="0" @input="setInput(rangeh2,stateh.from)">
+                <div class="color-range" ref="canvash">
+                  <input type="range" max="360" min="0" ref="rangeh1" class="input1" :value="valueRange.hmax" @input="setInput(rangeh1,stateh.to)">
+                  <input type="range" max="360" min="0" ref="rangeh2" class="input2" :value="valueRange.hmin" @input="setInput(rangeh2,stateh.from)">
                 </div>
 
                 <input class="second" :value="stateh.to*3.6">
@@ -60,8 +74,8 @@
                 <div class="key">C</div>
                 <input class="first" :value="statec.from">
                 <div class="color-range">
-                  <input type="range" max="360" min="0" ref="rangec1" value="360" @input="setInput(rangec1,statec.to)">
-                  <input type="range" max="360" min="0" ref="rangec2" value="0" @input="setInput(rangec1,statec.from)">
+                  <input type="range" max="100" min="0" ref="rangec1" class="input1" :value="valueRange.cmax" @input="setInput(rangec1,statec.to)">
+                  <input type="range" max="100" min="0" ref="rangec2" class="input2" :value="valueRange.cmin" @input="setInput(rangec1,statec.from)">
                 </div>
 
                 <input class="second" :value="statec.to">
@@ -73,8 +87,8 @@
                 <div class="key">L</div>
                 <input class="first" :value="statel.from">
                 <div class="color-range">
-                  <input type="range" max="360" min="0" ref="rangel1" value="360" @input="setInput(rangel1,statel.to)">
-                  <input type="range" max="360" min="0" ref="rangel2" value="0" @input="setInput(rangel1,statel.from)">
+                  <input type="range" max="100" min="0" ref="rangel1" class="input1" :value="valueRange.lmax" @input="setInput(rangel1,statel.to)">
+                  <input type="range" max="100" min="0" ref="rangel2" class="input2" :value="valueRange.lmin" @input="setInput(rangel1,statel.from)">
                 </div>
 
                 <input class="second" :value="statel.to">
@@ -92,9 +106,9 @@
         <div class="choose">
           <input v-model="num">
           <div class="colors">colors</div>
-          <select ref="clustering" >
-            <option value="soft(k-Means)">soft(k-Means)</option>
-            <option value="hard(Force vector)">hard(Force vector)</option>
+          <select ref="cluster" >
+            <option value="k-means">soft(k-Means)</option>
+            <option value="force-vector">hard(Force vector)</option>
           </select>
         </div>
         <button @click="makePalette">Make a palette</button>
@@ -109,16 +123,17 @@
 </template>
 
 <script setup>
-import { onMounted, reactive, ref, watch } from "vue";
+import { onMounted, reactive, ref, watch,watchEffect } from "vue";
 import iwanthue from "iwanthue";
+import { presets } from "@/stores/presets";
+import chroma from "chroma-js";
 
 
 
 const palettes=ref();
 const num=ref(4);
-const clustering=ref();
-
-
+const cluster=ref();
+const type=ref();
 
 const stateh = reactive({
   from:0,
@@ -132,14 +147,37 @@ const statel=reactive({
   from:0,
   to:100
 })
+const canvash=ref();
 const rangeh1=ref();
 const rangeh2=ref();
 const rangec1=ref();
 const rangec2=ref();
 const rangel1=ref();
 const rangel2=ref();
+const valueRange=reactive({
+  hmin:0,
+  hmax:360,
+  cmin:0,
+  cmax:100,
+  lmin:0,
+  lmax:100
+})
+
+watch(type,(type,prevtype)=>{
+    console.log("YES");
+    const typeValue=type.value;
+    const present=presets[typeValue];
+    valueRange.hmin=present[0];
+  }
+  ,{
+  deep:true,
+})//watch失效
+
+
+
 
 onMounted(()=>{
+  canvash.value.style.background="linear-gradient(to right, " + chroma.scale(['red', 'orange', 'yellow', 'green', 'blue', 'indigo', 'violet']).colors(10000).join(",")+")";
   setRange(rangeh1,rangeh2,stateh);
   setRange(rangec1,rangec2,statec);
   setRange(rangel1,rangel2,statel);
@@ -151,16 +189,17 @@ function setRange(range1,range2,state){
 }
 
 function setInput(range,point){
-  console.log(range.value);
-    point = parseInt(100 * (range.value - range.min) / (range.max - range.min));
+  console.log(range.value.value);
+  point = parseInt(100 * (range.value - range.min) / (range.max - range.min));
 }
 
-function makePalette(){
-  let cluster;
-  if(clustering.value.value==="soft(k-Means)") cluster="force-vector";
-  else cluster="k-means";
+function makePalette(event){
+  event.target.innerText="Roll Palette"
+  const clustering=cluster.value.value;
+  const colorSpace=type.value.value;
   const paletteColor=iwanthue(num.value,{
-    clustering:cluster
+    clustering:clustering,
+    colorSpace:colorSpace
   });
   for(const[index,item] of palettes.value.entries()){
     item.style.backgroundColor=paletteColor[index];
@@ -299,7 +338,7 @@ function makePalette(){
         width: 100%;
         border-radius: 6px;
         border: 1px rgba(0,0,0,0.3) solid;
-        &:hover,&:focus{
+        &:hover{
           filter: brightness(97%);
           transition: 0.3s;
         }
@@ -322,6 +361,8 @@ function makePalette(){
             border-radius: 5px;
             height: 80%;
             width: 80%;
+            transition-property: height;
+            transition: 1s;
           }
         }
       }
@@ -365,22 +406,23 @@ function makePalette(){
               >.color-range{
                 width: 200px;
                 position: relative;
+
                 #rangeh2{
                   &::-webkit-slider-runnable-track{
-                    background: linear-gradient(to right, transparent calc(1% * v-bind("stateh.from")), blue calc(1% * v-bind("stateh.from")) calc(1% * (v-bind("stateh.to"))), transparent 0%);
+                    background: linear-gradient(to right, rgb(244,244,244) calc(1% * v-bind("stateh.from")), transparent calc(1% * v-bind("stateh.from")) calc(1% * (v-bind("stateh.to"))), rgb(244,244,244) 0%);
 
                   }
                 }
                 #rangec2{
                   &::-webkit-slider-runnable-track{
-                    background: linear-gradient(to right, transparent calc(1% * v-bind("statec.from")), blue calc(1% * v-bind("statec.from")) calc(1% * (v-bind("statec.to"))), transparent 0%);
+                    background: linear-gradient(to right, rgb(244,244,244) calc(1% * v-bind("statec.from")), transparent calc(1% * v-bind("statec.from")) calc(1% * (v-bind("statec.to"))), rgb(244,244,244) 0%);
 
                   }
                 }
                 #rangel2{
-                &::-webkit-slider-runnable-track{
-                  background: linear-gradient(to right, transparent calc(1% * v-bind("statel.from")), blue calc(1% * v-bind("statel.from")) calc(1% * (v-bind("statel.to"))), transparent 0%);
-                }
+                  &::-webkit-slider-runnable-track{
+                    background: linear-gradient(to right, rgb(244,244,244) calc(1% * v-bind("statel.from")), transparent calc(1% * v-bind("statel.from")) calc(1% * (v-bind("statel.to"))), rgb(244,244,244) 0%);
+                  }
                 }
                 >input{
                   position: absolute;
@@ -388,7 +430,7 @@ function makePalette(){
                   pointer-events: none;
                   width: 100%;
                   -webkit-appearance: none;
-
+                  background: none;
                   &::-moz-range-track{
                     position: relative;
                     height: 30px;
@@ -399,12 +441,23 @@ function makePalette(){
                     -webkit-appearance: none;
                     height: 30px;
                     position: relative;
-                    width: 10px;
-                    border-left: 10px black solid;
+                    width: 16px;
                     z-index: 1;
+
                   }
                 }
-
+                >.input2{
+                  &::-webkit-slider-thumb{
+                    background-color: black;
+                    clip-path: polygon(0 0, 0% 100%, 100% 50%);
+                  }
+                }
+                >.input1{
+                  &::-webkit-slider-thumb{
+                    background-color: black;
+                    clip-path: polygon(0 50%, 100% 100%, 100% 0%);
+                  }
+                }
               }
             }
           }
