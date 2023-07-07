@@ -360,10 +360,8 @@ function setRange(range1,range2,state){
                   pointer-events: none;
                   width: 100%;
                   -webkit-appearance: none;
-                  background: none;
 
                   &::-moz-range-track{
-                    background: none;
                     position: relative;
                     height: 30px;
                     z-index: -1;
@@ -376,9 +374,6 @@ function setRange(range1,range2,state){
                     width: 10px;
                     border-left: 10px black solid;
                     z-index: 1;
-                  }
-                  &::-moz-range-thumb{
-                    pointer-events: auto;
                   }
                 }
 

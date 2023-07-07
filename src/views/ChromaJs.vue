@@ -100,7 +100,7 @@
 
 
               </div>
-              <div class="pic" id="hue">
+              <div class="pic" id="hue" >
 
 
               </div>
@@ -147,41 +147,41 @@ watch([colors,method,state],([colors,method,state],[])=>{
 
   }
   datal.value=newl,datas.value=news,datah.value=newh;
-  console.log(datal);
+  // console.log(datal);
 },)
 
 let charth,charts,chartl;
+let optionl,options,optionh;
 
 onMounted(()=> {
   chartl = echarts.init(document.getElementById("lightness"));
   charts = echarts.init(document.getElementById("saturation"));
-  charth = echarts.init(document.getElementById("hue"),)
-  let optionl = addOption(datal,"lightness")
-  let options = addOption(datas,"saturation");
-  let optionh = addOption(datah,"hue");
-  watch([datal,datas,datah],([datal,datas,datah],[])=>{
-    optionl = addOption(datal,"lightness")
-    options = addOption(datas,"saturation");
-    optionh = addOption(datah,"hue");
-    chartl.setOption(optionl,);
-    console.log(optionl);
-    console.log(datal);
-    charts.setOption(options,);
-    charth.setOption(optionh,);
-  })
+  charth = echarts.init(document.getElementById("hue"))
 
+  drawChart();
   window.addEventListener("resize", () => {
     chartl.resize();
     charts.resize();
     charth.resize();
   })
-  chartl.setOption(optionl,);
-  charts.setOption(options,);
-  charth.setOption(optionh,)
-
 })
 
 
+watch([datal,datas,datah],([datal,datas,datah],[])=>{
+  if(chartl!==undefined){
+    drawChart();
+  }
+})
+
+
+function drawChart(){
+  optionl = addOption(datal,"lightness")
+  options = addOption(datas,"saturation");
+  optionh = addOption(datah,"hue");
+  chartl.setOption(optionl,);
+  charts.setOption(options,);
+  charth.setOption(optionh,)
+}
 
 colors.value=state.init.match(reg)
 function addOption(data,title){
