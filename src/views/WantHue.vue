@@ -33,7 +33,7 @@
         <hr>
         <div class="space-main">
           <div class="left">
-            <select ref="type">
+            <select ref="type" @change="Change">
               <option value="default">Default present</option>
               <option value="all">All colors</option>
               <option value="colorblind">Colorblind friendly</option>
@@ -61,11 +61,11 @@
                 <div class="key">H</div>
                 <input class="first" :value="stateh.from">
                 <div class="color-range" ref="canvash">
-                  <input type="range" max="360" min="0" ref="rangeh1" class="input1" :value="valueRange.hmax" @input="setInput(rangeh1,stateh.to)">
-                  <input type="range" max="360" min="0" ref="rangeh2" class="input2" :value="valueRange.hmin" @input="setInput(rangeh2,stateh.from)">
+                  <input type="range" max="360" min="0" class="input1" id="rangeh1" v-model="stateh.to">
+                  <input type="range" max="360" min="0" class="input2" id="rangeh2" v-model="stateh.from">
                 </div>
 
-                <input class="second" :value="stateh.to*3.6">
+                <input class="second" :value="stateh.to">
               </div>
 
             </div>
@@ -73,9 +73,9 @@
               <div class="arg">
                 <div class="key">C</div>
                 <input class="first" :value="statec.from">
-                <div class="color-range">
-                  <input type="range" max="100" min="0" ref="rangec1" class="input1" :value="valueRange.cmax" @input="setInput(rangec1,statec.to)">
-                  <input type="range" max="100" min="0" ref="rangec2" class="input2" :value="valueRange.cmin" @input="setInput(rangec1,statec.from)">
+                <div class="color-range"  >
+                  <input type="range" max="100" min="0" class="input1" id="rangec1" v-model="statec.to" >
+                  <input type="range" max="100" min="0" class="input2" id="rangec2" v-model="statec.from">
                 </div>
 
                 <input class="second" :value="statec.to">
@@ -87,8 +87,8 @@
                 <div class="key">L</div>
                 <input class="first" :value="statel.from">
                 <div class="color-range">
-                  <input type="range" max="100" min="0" ref="rangel1" class="input1" :value="valueRange.lmax" @input="setInput(rangel1,statel.to)">
-                  <input type="range" max="100" min="0" ref="rangel2" class="input2" :value="valueRange.lmin" @input="setInput(rangel1,statel.from)">
+                  <input type="range" max="100" min="0" class="input1" id="rangel1" v-model="statel.to">
+                  <input type="range" max="100" min="0" class="input2" id="rangel2" v-model="statel.from">
                 </div>
 
                 <input class="second" :value="statel.to">
@@ -137,7 +137,7 @@ const type=ref();
 
 const stateh = reactive({
   from:0,
-  to:100
+  to:360
 })
 const statec=reactive({
   from:0,
@@ -148,50 +148,67 @@ const statel=reactive({
   to:100
 })
 const canvash=ref();
-const rangeh1=ref();
-const rangeh2=ref();
-const rangec1=ref();
-const rangec2=ref();
-const rangel1=ref();
-const rangel2=ref();
-const valueRange=reactive({
-  hmin:0,
-  hmax:360,
-  cmin:0,
-  cmax:100,
-  lmin:0,
-  lmax:100
-})
 
-watch(type,(type,prevtype)=>{
-    console.log("YES");
-    const typeValue=type.value;
-    const present=presets[typeValue];
-    valueRange.hmin=present[0];
-  }
-  ,{
-  deep:true,
-})//watch失效
+// const valueRange=reactive({
+//   hmin:0,
+//   hmax:360,
+//   cmin:0,
+//   cmax:100,
+//   lmin:0,
+//   lmax:100
+// })
 
+// watch(type,(type,prevtype)=>{
+//     console.log("YES");
+//     const typeValue=type.value;
+//     const present=presets[typeValue];
+//     valueRange.hmin=present[0];
+//   }
+//   ,{
+//   deep:true,
+// })//watch失效
+
+function Change(event){
+  const present=presets[event.target.value];
+  stateh.from=present[0];
+  stateh.to=present[1];
+  statec.from=present[2];
+  statec.to=present[3];
+  statel.from=present[4];
+  statel.to=present[5];
+}
 
 
 
 onMounted(()=>{
   canvash.value.style.background="linear-gradient(to right, " + chroma.scale(['red', 'orange', 'yellow', 'green', 'blue', 'indigo', 'violet']).colors(10000).join(",")+")";
-  setRange(rangeh1,rangeh2,stateh);
-  setRange(rangec1,rangec2,statec);
-  setRange(rangel1,rangel2,statel);
-
 })
-function setRange(range1,range2,state){
-  setInput(range1,state.to)
-  setInput(range2,state.from);
+
+onMounted(()=>{
+  const rangeh1=document.getElementById("rangeh1");
+  const rangeh2=document.getElementById("rangeh2");
+  const rangec1=document.getElementById("rangec1");
+  const rangec2=document.getElementById("rangec2");
+  const rangel1=document.getElementById("rangel1");
+  const rangel2=document.getElementById("rangel2");
+  setRange(rangeh1,rangeh2,stateh,360);
+  setRange(rangec1,rangec2,statec,100);
+  setRange(rangel1,rangel2,statel,100);
+})
+function setRange(range1,range2,state,max){
+
+  range1.addEventListener('input', function () {
+    state.to = parseInt(max * (this.value - this.min) / (this.max - this.min));
+  });
+  range2.addEventListener("input",function(){
+    console.log(stateh.from);
+    console.log(this.value);
+    state.from = parseInt(max * (this.value - this.min)/(this.max - this.min));
+  });
 }
 
-function setInput(range,point){
-  console.log(range.value.value);
-  point = parseInt(100 * (range.value - range.min) / (range.max - range.min));
-}
+
+
 
 function makePalette(event){
   event.target.innerText="Roll Palette"
@@ -409,7 +426,7 @@ function makePalette(event){
 
                 #rangeh2{
                   &::-webkit-slider-runnable-track{
-                    background: linear-gradient(to right, rgb(244,244,244) calc(1% * v-bind("stateh.from")), transparent calc(1% * v-bind("stateh.from")) calc(1% * (v-bind("stateh.to"))), rgb(244,244,244) 0%);
+                    background: linear-gradient(to right, rgb(244,244,244) calc(v-bind("stateh.from")/360 *100%), transparent calc(v-bind("stateh.from")/360 *100%) calc((v-bind("stateh.to")/360)*100%), rgb(244,244,244) 0%);
 
                   }
                 }
