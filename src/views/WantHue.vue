@@ -73,7 +73,7 @@
               <div class="arg">
                 <div class="key">C</div>
                 <input class="first" :value="statec.from">
-                <div class="color-range"  >
+                <div class="color-range" ref="canvasc" >
                   <input type="range" max="100" min="0" class="input1" id="rangec1" v-model="statec.to" >
                   <input type="range" max="100" min="0" class="input2" id="rangec2" v-model="statec.from">
                 </div>
@@ -86,7 +86,7 @@
               <div class="arg">
                 <div class="key">L</div>
                 <input class="first" :value="statel.from">
-                <div class="color-range">
+                <div class="color-range" ref="canvasl">
                   <input type="range" max="100" min="0" class="input1" id="rangel1" v-model="statel.to">
                   <input type="range" max="100" min="0" class="input2" id="rangel2" v-model="statel.from">
                 </div>
@@ -94,6 +94,20 @@
                 <input class="second" :value="statel.to">
               </div>
 
+            </div>
+            <br>
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox"  value="" id="flexCheckDefault">
+              <label class="form-check-label" for="flexCheckDefault">
+                improve for the colorblind(slow)
+
+              </label>
+            </div>
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox"  id="flexCheckChecked" @change="ChangeTheme">
+              <label class="form-check-label" for="flexCheckChecked" >
+                Dark background
+              </label>
             </div>
           </div>
 
@@ -113,7 +127,7 @@
         </div>
         <button @click="makePalette">Make a palette</button>
         <div class="vessel">
-          <div v-for="index of num" :key="index" >
+          <div v-for="(index) in arr" :key="index" >
             <div ref="palettes" class="palettes"></div>
           </div>
         </div>
@@ -132,41 +146,32 @@ import chroma from "chroma-js";
 
 const palettes=ref();
 const num=ref(4);
+const arr=ref([])
+arr.value.length=num.value;
+
+watch(num,(newnum)=>{
+  arr.value.length=newnum;
+})
+
 const cluster=ref();
 const type=ref();
+const theme=ref("white");
 
 const stateh = reactive({
   from:0,
   to:360
 })
 const statec=reactive({
-  from:0,
-  to:100
+  from:30,
+  to:80
 })
 const statel=reactive({
-  from:0,
-  to:100
+  from:35,
+  to:80
 })
 const canvash=ref();
-
-// const valueRange=reactive({
-//   hmin:0,
-//   hmax:360,
-//   cmin:0,
-//   cmax:100,
-//   lmin:0,
-//   lmax:100
-// })
-
-// watch(type,(type,prevtype)=>{
-//     console.log("YES");
-//     const typeValue=type.value;
-//     const present=presets[typeValue];
-//     valueRange.hmin=present[0];
-//   }
-//   ,{
-//   deep:true,
-// })//watch失效
+const canvasc=ref();
+const canvasl=ref();
 
 function Change(event){
   const present=presets[event.target.value];
@@ -179,9 +184,11 @@ function Change(event){
 }
 
 
-
+//不太清楚背景颜色是根据什么渲染出来的
 onMounted(()=>{
   canvash.value.style.background="linear-gradient(to right, " + chroma.scale(['red', 'orange', 'yellow', 'green', 'blue', 'indigo', 'violet']).colors(10000).join(",")+")";
+  canvasc.value.style.background="linear-gradient(to right, " + chroma.scale(["white","violet"]).colors(10000).join(",")+")";
+  canvasl.value.style.background="linear-gradient(to right, " + chroma.scale(['black',"white"]).colors(10000).join(",")+")";
 })
 
 onMounted(()=>{
@@ -201,8 +208,6 @@ function setRange(range1,range2,state,max){
     state.to = parseInt(max * (this.value - this.min) / (this.max - this.min));
   });
   range2.addEventListener("input",function(){
-    console.log(stateh.from);
-    console.log(this.value);
     state.from = parseInt(max * (this.value - this.min)/(this.max - this.min));
   });
 }
@@ -213,19 +218,38 @@ function setRange(range1,range2,state,max){
 function makePalette(event){
   event.target.innerText="Roll Palette"
   const clustering=cluster.value.value;
-  const colorSpace=type.value.value;
   const paletteColor=iwanthue(num.value,{
     clustering:clustering,
-    colorSpace:colorSpace
+    colorSpace:[stateh.from,stateh.to,statec.from,statec.to,statel.from,statel.to]
   });
   for(const[index,item] of palettes.value.entries()){
     item.style.backgroundColor=paletteColor[index];
   }
 }
 
+function ChangeTheme(){
+  theme.value=theme.value==="white"?"black":"white";
+  document.documentElement.setAttribute("data-theme",theme.value);
+}
+
 </script>
 
 <style scoped lang="scss">
+$w-bg-color:rgb(244,244,244);
+$b-bg-color:rgb(51,51,51);
+$w-font-color:rgb(238,238,238);
+$b-font-color:rgb(85,85,85);
+
+@mixin bg-color(){
+  [data-theme="white"] & {
+    background-color: $w-bg-color;
+    color: $b-font-color;
+  }
+  [data-theme="black"] & {
+    background-color: $b-bg-color;
+    color: $w-font-color;
+  }
+}
 
 @mixin input-focus{
   box-shadow: 0 0 8px 2px rgba(73,228,253,0.3);
@@ -250,6 +274,7 @@ function makePalette(event){
     max-height: 50px;
     .nav{
       color: rgb(108,117,125);
+
       font-size: 15px;
       min-width: 50px;
       max-height: 40px;
@@ -307,6 +332,8 @@ function makePalette(event){
   }
   .body{
     background-color: rgb(244,244,244);
+    @include bg-color;
+    transition: 0.3s;
     box-sizing: border-box;
     padding: 20px;
     display: flex;
@@ -368,7 +395,13 @@ function makePalette(event){
         >div{
           height: 80px;
           width: 50px;
-          background-image: url("../pics/palette_hole.png");
+          [data-theme="black"] &{
+            background-image: url("../pics/palette_hole_dark.png");
+          }
+          [data-theme="white"] &{
+            background-image: url("../pics/palette_hole.png");
+          }
+          transition: 0.5s;
           margin-right: 10px;
           margin-top: 10px;
           display: flex;
@@ -460,7 +493,7 @@ function makePalette(event){
                     position: relative;
                     width: 16px;
                     z-index: 1;
-
+                    background-color: transparent;
                   }
                 }
                 >.input2{

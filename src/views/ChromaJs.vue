@@ -22,10 +22,10 @@
                     <div class="left">
                         <div class="key">Palette type: </div>
                         <div class="btn-group" role="group" aria-label="Basic radio toggle button group">
-                            <input type="radio" class="btn-check" name="btnradio" id="btnradio1" autocomplete="off" checked />
+                            <input type="radio" class="btn-check" name="btnradio" id="btnradio1" autocomplete="off" @click="diverging=false" checked />
                             <label class="btn btn-outline-primary" for="btnradio1">sequential</label>
 
-                            <input type="radio" class="btn-check" name="btnradio" id="btnradio2" autocomplete="off" />
+                            <input type="radio" class="btn-check" name="btnradio" id="btnradio2" autocomplete="off" @click="diverging=true" />
                             <label class="btn btn-outline-primary" for="btnradio2">diverging</label>
 
 
@@ -42,7 +42,7 @@
               <div class="head">
                 <div class="head-title">Select and arrange input colors</div>
               </div>
-              <div class="color-input"  tabindex="0">
+              <div class="color-input" v-if="diverging===false">
                 <div>
                   <input type="text" v-model="state.init" class="form-control" id="exampleFormControlInput1" />
 <!--                  <div class="colors" v-if="isFocus===false">-->
@@ -50,7 +50,14 @@
 <!--                  </div>-->
                 </div>
               </div>
-
+            <div class="input-diverging" v-else>
+              <div class="color-input">
+                <input type="text" v-model="state.init1" class="form-control" id="exampleFormControlInput1" />
+              </div>
+              <div class="color-input">
+                <input type="text" v-model="state.init2" class="form-control" id="exampleFormControlInput1" />
+              </div>
+            </div>
             </div>
           <div class="box">
             <div class="head">
@@ -119,8 +126,14 @@ import { watch } from "vue";
 import chroma from "chroma-js"
 
 const colors=ref([]);
+const colors_diverging=reactive({
+  colors1:[],
+  colors2:[]
+})
 const state=reactive({
   init:"#00429d，#ffffff",
+  init1:"00429d，#ffffff",
+  init2:"00429d，#ffffff",
   number:9
 
 })
@@ -128,17 +141,18 @@ const method=reactive({
   lightness:true,
   bezier:true
 })
+const diverging=ref(false);
+
 
 const datah=ref([]),datas=ref([]),datal=ref([]);
 const range=ref([]);
 const reg=/#([a-fA-F0-9]{6})/g;
 
-watch([colors,method,state],([colors,method,state],[])=>{
+watch([colors,method,state,diverging],([colors,method,state,diverging],[])=>{
   colors.value=state.init.match(reg);
   let scale;
   if(method.bezier===true && colors.value.length > 1) scale=chroma.bezier(colors.value).scale();
   else  scale=chroma.scale(colors.value);
-  if(method.lightness===true) scale=scale.correctLightness();
   range.value=scale.colors(state.number);
   const newh=[],news=[],newl=[];
   for(let i=0;i<state.number;i++){
@@ -148,7 +162,13 @@ watch([colors,method,state],([colors,method,state],[])=>{
   }
   datal.value=newl,datas.value=news,datah.value=newh;
   // console.log(datal);
+  if(diverging===true){
+    colors_diverging.colors1=state.init1.match(reg);
+    colors_diverging.colors2=state.init2.match(reg);
+
+  }
 },)
+
 
 let charth,charts,chartl;
 let optionl,options,optionh;
@@ -256,29 +276,12 @@ $btn-color:rgb(108,117,125);
                 box-shadow: 0 0 2px 2px rgba(0,0,0,0.1);
                 padding: 20px;
                 box-sizing: border-box;
-              >.color-input{
-                position: relative;
-
-                >div{
-                  >.colors{
-                    position: absolute;
-                    top: 8px;
-                    display: flex;
-                    left: 10px;
-                    >div{
-                      border-radius: 5px;
-                      margin-right: 10px;
-                      box-shadow: 0 0 3px 1px rgba(0,0,0,0.3);
-                      width: 75px;
-                      height: 23px;
-                      display: flex;
-                      justify-content: center;
-                      align-items: center;
-
-                    }
-                  }
+              >.input-diverging{
+                display: flex;
+                justify-content: space-between;
+                >.color-input{
+                  width: 48%;
                 }
-
 
               }
                 .head{
@@ -297,6 +300,9 @@ $btn-color:rgb(108,117,125);
                     .middle-right{
                       margin-top: -10px;
                       margin-bottom: 20px;
+                      @media (max-width: 1000px) {
+                        margin-top: 10px;
+                      }
                       .reminder{
                         display: flex;
                         align-items: center;
@@ -309,6 +315,9 @@ $btn-color:rgb(108,117,125);
                           justify-content: center;
                           width: 300px;
                           font-size: 12px;
+                          @media (max-width: 1000px) {
+                            flex-wrap: wrap;
+                          }
                             .key{
                                 margin-right: 10px;
                             }
@@ -378,6 +387,10 @@ $btn-color:rgb(108,117,125);
                         width: 500px;
                         display: flex;
                         align-items: center;
+                      @media (max-width: 1000px) {
+                        flex-wrap: wrap;
+                        margin-bottom: 10px;
+                      }
                         .key{
                             font-weight: 300;
                             margin-right: 10px;
