@@ -132,8 +132,8 @@ const colors_diverging=reactive({
 })
 const state=reactive({
   init:"#00429d，#ffffff",
-  init1:"00429d，#ffffff",
-  init2:"00429d，#ffffff",
+  init1:"#00429d，#ffffff",
+  init2:"#00429d，#ffffff",
   number:9
 
 })
@@ -149,24 +149,52 @@ const range=ref([]);
 const reg=/#([a-fA-F0-9]{6})/g;
 
 watch([colors,method,state,diverging],([colors,method,state,diverging],[])=>{
-  colors.value=state.init.match(reg);
-  let scale;
-  if(method.bezier===true && colors.value.length > 1) scale=chroma.bezier(colors.value).scale();
-  else  scale=chroma.scale(colors.value);
-  range.value=scale.colors(state.number);
+  if(diverging===false){
+    colors.value=state.init.match(reg);
+    let scale;
+    if(method.bezier===true && colors.value.length > 1) scale=chroma.bezier(colors.value).scale();
+    else  scale=chroma.scale(colors.value);
+    range.value=scale.colors(state.number);
+    const newh=[],news=[],newl=[];
+    for(let i=0;i<state.number;i++){
+      const tmparr=chroma(range.value[i]).hsl();
+      newh.push(tmparr[0]),news.push(tmparr[1]*100),newl.push(tmparr[2]*100);
+
+    }
+    datal.value=newl,datas.value=news,datah.value=newh;
+  }
+
+  // if(diverging===true){
+  //   colors_diverging.colors1=state.init1.match(reg);
+  //   colors_diverging.colors2=state.init2.match(reg);
+  //   let scale1,scale2;
+  //   if(method.bezier===true && colors.value.length > 1){
+  //     scale1=chroma.bezier(colors_diverging.colors1).scale();
+  //     scale2=chroma.bezier(colors_diverging.colors2).scale();
+  //   }
+  //   else{
+  //     scale1=chroma.scale(colors_diverging.colors1);
+  //     scale2=chroma.scale(colors_diverging.colors2);
+  //   }
+  //   const num = parseInt(state.number/2);
+  //   console.log(scale1.colors(num).concat("#ffffff").concat(scale2.colors(num)));
+  //   if(state.number%2){
+  //     range.value=scale1.colors(num).concat("#ffffff").concat(scale2.colors(num));
+  //     console.log(range.value.length);
+  //   }
+  //   else{
+  //     range.value=scale1.colors(num).concat(scale2.colors(num));
+  //   }
+  //
+  // }
   const newh=[],news=[],newl=[];
   for(let i=0;i<state.number;i++){
+    console.log(range.value[i]);
     const tmparr=chroma(range.value[i]).hsl();
     newh.push(tmparr[0]),news.push(tmparr[1]*100),newl.push(tmparr[2]*100);
 
   }
   datal.value=newl,datas.value=news,datah.value=newh;
-  // console.log(datal);
-  if(diverging===true){
-    colors_diverging.colors1=state.init1.match(reg);
-    colors_diverging.colors2=state.init2.match(reg);
-
-  }
 },)
 
 

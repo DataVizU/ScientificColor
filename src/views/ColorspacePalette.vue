@@ -10,19 +10,27 @@ import { onMounted } from "vue";
 import { select } from "d3";
 
 const data=[];
+// for(let l=0; l <= 100; l+= 10){
+//   for(let h=0;h<=360;h+=15){
+//     for(let c=100;c>=0;c -=15){
+//
+//       data.push(chroma.hcl(h,c,l));
+//
+//     }
+//   }
+//
+// }
 
-for(let h=0;h<=360;h+=5){
-  for(let c=100;c>=0;c -=5){
-    for(let l=100;l>=0;l-=5){
-      data.push(chroma.hcl(h,c,l));
+for(let l = 0; l <= 100; l += 10){
+  for (let a =127;a >= -128;a -=10) {
+    for(let b = 127;b >= -128;b -= 13) {
+
+        data.push(chroma.lab(l, a, b));
+      }
     }
-  }
 }
 
 
-// console.log(colorSamples);
-
-// const data=["red","orange","blue","green","yellow","#ffffff","#000000"];
 onMounted(()=>{
   init();
 
@@ -41,12 +49,12 @@ function init(){
     })
     .attr("r",5)
     .attr("cx",(d)=>{
-      let x= (10 - 10 * (chroma(d).lab()[1] - 0.25 * chroma(d).lab()[0] - 0.3 * chroma(d).lab()[2]))/10+120;
+      let x= (10 - 10 * (chroma(d).lab()[1] - 0.2 * chroma(d).lab()[0] - 0.2 * chroma(d).lab()[2]))/6+150;
       console.log(x);
       return x;
     })
     .attr("cy",(d)=>{
-      let y=(8 * (chroma(d).lab()[2] - 1.1 * chroma(d).lab()[0] + 0.1 * chroma(d).lab()[1]))/10+200;
+      let y=(9 * (chroma(d).lab()[2] - 1.1 * chroma(d).lab()[0] + 0.1 * chroma(d).lab()[1]))/6+220;
       console.log(y);
       return y;
     })

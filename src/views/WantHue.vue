@@ -107,7 +107,7 @@
             </div>
           </div>
           <div class="right">
-            <ColorspacePalette></ColorspacePalette>
+            <ColorspacePalette class="picture" :hfrom="stateh.from" :hto="stateh.to"></ColorspacePalette>
           </div>
         </div>
 
@@ -128,6 +128,12 @@
           <div v-for="(index) in arr" :key="index" >
             <div ref="palettes" class="palettes"></div>
           </div>
+        </div>
+        <div class="sort" v-if="bottom===true">
+          Sort by
+          <span @click="paletteColor.sort(SortbyHue)">hue</span>
+          <span @click="paletteColor.sort(SortbyChroma)">chroma</span>
+          <span @click="paletteColor.sort(SortbyLightness)">lightness</span>
         </div>
       </div>
     </div>
@@ -294,6 +300,30 @@ function ChangeTheme(){
   theme.value=theme.value==="white"?"black":"white";
   document.documentElement.setAttribute("data-theme",theme.value);
 }
+
+function SortbyHue(a, b){
+  if(chroma(a).hcl()[0] > chroma(b).hcl()[0]) return 1;
+  else return -1;
+}
+function SortbyChroma(a, b){
+  if(chroma(a).hcl()[1] > chroma(b).hcl()[1]) return 1;
+  else return -1;
+}
+function SortbyLightness(a, b){
+  if(chroma(a).hcl()[2] > chroma(b).hcl()[2]) return 1;
+  else return -1;
+}
+
+
+
+defineProps({
+  hfrom:Number,
+  hto:Number,
+  cfrom:Number,
+  cto:Number,
+  lfrom:Number,
+  lto:Number
+})
 
 </script>
 
@@ -481,6 +511,19 @@ $b-font-color:rgb(85,85,85);
           }
         }
       }
+      >.sort{
+        font-size: 12px;
+        margin-top: 20px;
+
+        >span{
+          color: #08c;
+          cursor: pointer;
+          margin-right: 10px;
+          &:hover{
+            text-decoration: underline;
+          }
+        }
+      }
     }
     >.half{
 
@@ -586,6 +629,10 @@ $b-font-color:rgb(85,85,85);
           margin-left: 10px;
           height: 300px;
           margin-bottom: 20px;
+          >.picture{
+            position: relative;
+            z-index: 1;
+          }
         }
       }
     }
