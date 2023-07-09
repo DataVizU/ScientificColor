@@ -1,21 +1,17 @@
-<script setup>
-
-
-</script>
 
 <template>
   <div class="all">
     <div class="navbar">
       <a href="http://vis4.net/blog/posts/mastering-multi-hued-color-scales/" class="nav nav-home">I want hue</a>
-      <a class="nav">Tutorials</a>
-      <a class="nav">Examples</a>
-      <a class="nav">Theory</a>
-      <a class="nav">Experiment</a>
+      <a href="https://iwanthue.datavizu.app/tutorial/" class="nav">Tutorials</a>
+      <a href="https://iwanthue.datavizu.app/examples/" class="nav">Examples</a>
+      <a href="https://iwanthue.datavizu.app/theory/" class="nav">Theory</a>
+      <a href="https://iwanthue.datavizu.app/experiment/" class="nav">Experiment</a>
       <a class="nav">Old version</a>
-      <a class="nav">Github</a>
-      <a class="nav">Issues</a>
-      <a class="nav">npm</a>
-      <a class="nav">Medialab Tools</a>
+      <a href="https://github.com/medialab/iwanthue" class="nav">Github</a>
+      <a href="https://github.com/medialab/iwanthue/issues" class="nav">Issues</a>
+      <a href="https://www.npmjs.com/package/iwanthue" class="nav">npm</a>
+      <a href="http://tools.medialab.sciences-po.fr/" class="nav">Medialab Tools</a>
     </div>
     <div class="middle">
       <div class="left">
@@ -110,7 +106,9 @@
               </label>
             </div>
           </div>
-
+          <div class="right">
+            <ColorspacePalette></ColorspacePalette>
+          </div>
         </div>
 
       </div>
@@ -133,6 +131,68 @@
         </div>
       </div>
     </div>
+    <div class="bottom" v-if="bottom===true">
+      <div class="colors">
+        <h4>Colors</h4>
+        <div class="color">
+          <div v-for="(item,index) in paletteColor" :key="index">
+            <div class="color-color" :style="{backgroundColor:item}"></div>
+            <div class="describe">
+              <div class="arg">
+                <div class="number">{{item}}</div>
+                <div class="key">HEX</div>
+              </div>
+              <div class="arg">
+                <div class="number">{{chroma(item).rgb().toString()}}</div>
+                <div class="key">RGB</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="json">
+        <h4>JSON</h4>
+        <div>
+          <h5>HEX json</h5>
+          <div class="pre">
+            <div v-for="(item,index) in paletteColor" :key="index">"{{item}}",</div>
+          </div>
+        </div>
+        <div>
+          <h5>RGB json</h5>
+          <div class="pre">
+            <div v-for="(item,index) in paletteColor" :key="index">{{chroma(item).rgb()}},</div>
+          </div>
+        </div>
+        <div>
+          <h5>HCL json</h5>
+          <div class="pre">
+            <div v-for="(item,index) in paletteColor" :key="index">{{chroma(item).hcl().map((item)=>item.toFixed(3))}},</div>
+          </div>
+        </div>
+        <div>
+          <h5>LAB json</h5>
+          <div class="pre">
+            <div v-for="(item,index) in paletteColor" :key="index">{{chroma(item).lab().map((item)=>item.toFixed(3))}},</div>
+          </div>
+        </div>
+      </div>
+      <div class="json">
+        <h4>CSS</h4>
+        <div>
+          <h5>HEX list for CSS</h5>
+          <div class="pre">
+            <div v-for="(item,index) in paletteColor" :key="index">{{item}}</div>
+          </div>
+        </div>
+        <div>
+          <h5>RGB list for CSS</h5>
+          <div class="pre">
+            <div v-for="(item,index) in paletteColor" :key="index">rgb({{chroma(item).rgb().toString()}})</div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -141,7 +201,7 @@ import { onMounted, reactive, ref, watch,watchEffect } from "vue";
 import iwanthue from "iwanthue";
 import { presets } from "@/stores/presets";
 import chroma from "chroma-js";
-
+import ColorspacePalette from "./ColorspacePalette.vue"
 
 
 const palettes=ref();
@@ -154,6 +214,7 @@ watch(num,(newnum)=>{
 })
 
 const cluster=ref();
+const bottom=ref(false);
 const type=ref();
 const theme=ref("white");
 
@@ -169,6 +230,7 @@ const statel=reactive({
   from:35,
   to:80
 })
+
 const canvash=ref();
 const canvasc=ref();
 const canvasl=ref();
@@ -212,18 +274,19 @@ function setRange(range1,range2,state,max){
   });
 }
 
-
+const paletteColor=ref();
 
 
 function makePalette(event){
+  bottom.value=true;
   event.target.innerText="Roll Palette"
   const clustering=cluster.value.value;
-  const paletteColor=iwanthue(num.value,{
+  paletteColor.value=iwanthue(num.value,{
     clustering:clustering,
     colorSpace:[stateh.from,stateh.to,statec.from,statec.to,statel.from,statel.to]
   });
   for(const[index,item] of palettes.value.entries()){
-    item.style.backgroundColor=paletteColor[index];
+    item.style.backgroundColor=paletteColor.value[index];
   }
 }
 
@@ -343,19 +406,19 @@ $b-font-color:rgb(85,85,85);
     }
 
     >.left{
-      width: 67%;
+      width: 77%;
       @media (max-width: 1000px) {
         width: 100%;
       }
     }
     >.right{
-      width: 30%;
+      width: 20%;
       @media (max-width: 1000px) {
         width: 100%;
       }
       >.choose{
         display: flex;
-        width: 100%;
+        width: 90%;
         height: 30px;
         line-height: 30px;
         >input{
@@ -375,6 +438,7 @@ $b-font-color:rgb(85,85,85);
         }
         >select{
           height: 30px;
+          width: 130px;
         }
       }
       >button{
@@ -395,10 +459,11 @@ $b-font-color:rgb(85,85,85);
         >div{
           height: 80px;
           width: 50px;
-          [data-theme="black"] &{
+          background-image: url("../pics/palette_hole.png");
+          [data-theme="black"] & {
             background-image: url("../pics/palette_hole_dark.png");
           }
-          [data-theme="white"] &{
+          [data-theme="white"] & {
             background-image: url("../pics/palette_hole.png");
           }
           transition: 0.5s;
@@ -423,6 +488,10 @@ $b-font-color:rgb(85,85,85);
         width: 100%;
         height: 100%;
         padding: 15px;
+        display: flex;
+        @media (max-width: 1000px) {
+          flex-wrap: wrap;
+        }
         >.left{
           width: 300px;
           >select{
@@ -512,9 +581,80 @@ $b-font-color:rgb(85,85,85);
             }
           }
         }
+        >.right{
+          width: 100%;
+          margin-left: 10px;
+          height: 300px;
+          margin-bottom: 20px;
+        }
       }
     }
 
+  }
+  .bottom{
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+    padding: 10px;
+    >.colors{
+      width: 47%;
+      >.color{
+        width: 100%;
+        >div{
+          width: 100%;
+          height: 125px;
+          margin-bottom: 20px;
+          //background-color: red;
+          >.color-color{
+            width: 100%;
+            height: 80px;
+          }
+          >.describe{
+            display: flex;
+            background-color: rgb(238,238,238);
+            align-items: center;
+            box-sizing: border-box;
+            padding: 0 10px;
+            >.arg{
+              height: 38px;
+              width: 80px;
+              margin-right: 15px;
+              >.number{
+                font-size: 16px;
+                font-weight: bold;
+                color: #888;
+              }
+              >.key{
+                font-size: 10px;
+                color: #AAA;
+                line-height: 8px;
+              }
+            }
+          }
+        }
+      }
+
+    }
+    >.json{
+      width: 23%;
+      >div{
+        margin-bottom: 10px;
+        >h5{
+          font-size: 14px;
+          line-height: 20px;
+          font-weight: bold;
+        }
+        >.pre{
+          font-size: 13px;
+          background-color: #f5f5f5;;
+          border-radius: 5px;
+          border: solid 1px rgba(0,0,0,0.3);
+          box-sizing: border-box;
+          padding: 10px;
+        }
+      }
+    }
   }
 }
 

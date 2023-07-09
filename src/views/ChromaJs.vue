@@ -281,6 +281,7 @@ $btn-color:rgb(108,117,125);
                 justify-content: space-between;
                 >.color-input{
                   width: 48%;
+
                 }
 
               }
