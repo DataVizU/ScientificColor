@@ -93,8 +93,8 @@
             </div>
             <br>
             <div class="form-check">
-              <input class="form-check-input" type="checkbox"  value="" id="flexCheckDefault">
-              <label class="form-check-label" for="flexCheckDefault">
+              <input class="form-check-input" type="checkbox"  value="" id="flexCheckDefault" @click="ChangeBlind">
+              <label class="form-check-label" for="flexCheckDefault" >
                 improve for the colorblind(slow)
 
               </label>
@@ -107,7 +107,8 @@
             </div>
           </div>
           <div class="right">
-            <ColorspacePalette class="picture" :hfrom="stateh.from" :hto="stateh.to"></ColorspacePalette>
+            <ColorspacePalette class="picture" :hfrom="stateh.from" :hto="stateh.to" :cfrom="statec.from" :cto="statec.to" :lfrom="statel.from" :lto="statel.to"></ColorspacePalette>
+
           </div>
         </div>
 
@@ -117,6 +118,7 @@
         <hr>
         <div class="choose">
           <input v-model="num">
+<!--          Here!改变后有错误-->
           <div class="colors">colors</div>
           <select ref="cluster" >
             <option value="k-means">soft(k-Means)</option>
@@ -210,10 +212,11 @@ import chroma from "chroma-js";
 import ColorspacePalette from "./ColorspacePalette.vue"
 
 
+
 const palettes=ref();
 const num=ref(4);
 const arr=ref([])
-arr.value.length=num.value;
+arr.value.length=num.value;//Here!定义一个长度为num的数组，因为在template里面用v-for得要个数组
 
 watch(num,(newnum)=>{
   arr.value.length=newnum;
@@ -281,19 +284,25 @@ function setRange(range1,range2,state,max){
 }
 
 const paletteColor=ref();
-
+const isBlind=ref("euclidean");
 
 function makePalette(event){
   bottom.value=true;
   event.target.innerText="Roll Palette"
   const clustering=cluster.value.value;
+  console.log(num.value);//Here!
   paletteColor.value=iwanthue(num.value,{
     clustering:clustering,
-    colorSpace:[stateh.from,stateh.to,statec.from,statec.to,statel.from,statel.to]
+    colorSpace:[stateh.from,stateh.to,statec.from,statec.to,statel.from,statel.to],
+    distance:isBlind.value,
   });
   for(const[index,item] of palettes.value.entries()){
     item.style.backgroundColor=paletteColor.value[index];
   }
+}
+
+function ChangeBlind(){
+  isBlind.value=isBlind.value==="euclidean"?"compromise":"euclidean";
 }
 
 function ChangeTheme(){
@@ -361,6 +370,7 @@ $b-font-color:rgb(85,85,85);
     flex-wrap: nowrap;
     background-color: black;
     position: sticky;
+    top: 0;
     display: flex;
     justify-content: space-around;
     height: 50px;
@@ -571,6 +581,9 @@ $b-font-color:rgb(85,85,85);
 
                 #rangeh2{
                   &::-webkit-slider-runnable-track{
+                    //@if v-bind("stateh.from") > v-bind("stateh.to"){
+                    //  background: linear-gradient(to right, rgb(244,244,244) calc(v-bind("stateh.from")/360 *100%), transparent calc(v-bind("stateh.from")/360 *100%) calc((v-bind("stateh.to")/360)*100%), rgb(244,244,244) 0%);
+                    //}Here!啊，这样不行的话，那怎么做呢
                     background: linear-gradient(to right, rgb(244,244,244) calc(v-bind("stateh.from")/360 *100%), transparent calc(v-bind("stateh.from")/360 *100%) calc((v-bind("stateh.to")/360)*100%), rgb(244,244,244) 0%);
 
                   }
@@ -643,9 +656,15 @@ $b-font-color:rgb(85,85,85);
     display: flex;
     justify-content: space-between;
     margin-top: 20px;
+    @media (max-width: 1000px) {
+      flex-wrap: wrap;
+    }
     padding: 10px;
     >.colors{
       width: 47%;
+      @media (max-width: 1000px) {
+        width: 100%;
+      }
       >.color{
         width: 100%;
         >div{
@@ -685,6 +704,9 @@ $b-font-color:rgb(85,85,85);
     }
     >.json{
       width: 23%;
+      @media (max-width: 1000px) {
+        width: 100%;
+      }
       >div{
         margin-bottom: 10px;
         >h5{
