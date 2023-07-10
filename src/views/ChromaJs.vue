@@ -124,6 +124,7 @@ import {ref} from "vue";
 import * as echarts from "echarts";
 import { watch } from "vue";
 import chroma from "chroma-js"
+import _range from "lodash-es/range";
 
 const colors=ref([]);
 const colors_diverging=reactive({
@@ -151,42 +152,51 @@ const reg=/#([a-fA-F0-9]{6})/g;
 watch([colors,method,state,diverging],([colors,method,state,diverging],[])=>{
   if(diverging===false){
     colors.value=state.init.match(reg);
-    let scale;
-    if(method.bezier===true && colors.value.length > 1) scale=chroma.bezier(colors.value).scale();
-    else  scale=chroma.scale(colors.value);
-    range.value=scale.colors(state.number);
-    const newh=[],news=[],newl=[];
-    for(let i=0;i<state.number;i++){
-      const tmparr=chroma(range.value[i]).hsl();
-      newh.push(tmparr[0]),news.push(tmparr[1]*100),newl.push(tmparr[2]*100);
+    if(colors.value!==null){
+      if(colors.value.length === 1) colors.value= autoColors(colors.value[0], state.number);
+      let scale;
+      if(method.bezier===true && colors.value.length > 1) scale=chroma.bezier(colors.value).scale();
+      else  scale=chroma.scale(colors.value);
+      range.value=scale.colors(state.number);
+      const newh=[],news=[],newl=[];
+      for(let i=0;i<state.number;i++){
+        const tmparr=chroma(range.value[i]).hsl();
+        newh.push(tmparr[0]),news.push(tmparr[1]*100),newl.push(tmparr[2]*100);
 
+      }
+      datal.value=newl,datas.value=news,datah.value=newh;
     }
-    datal.value=newl,datas.value=news,datah.value=newh;
+
   }
 
-  // if(diverging===true){
-  //   colors_diverging.colors1=state.init1.match(reg);
-  //   colors_diverging.colors2=state.init2.match(reg);
-  //   let scale1,scale2;
-  //   if(method.bezier===true && colors.value.length > 1){
-  //     scale1=chroma.bezier(colors_diverging.colors1).scale();
-  //     scale2=chroma.bezier(colors_diverging.colors2).scale();
-  //   }
-  //   else{
-  //     scale1=chroma.scale(colors_diverging.colors1);
-  //     scale2=chroma.scale(colors_diverging.colors2);
-  //   }
-  //   const num = parseInt(state.number/2);
-  //   console.log(scale1.colors(num).concat("#ffffff").concat(scale2.colors(num)));
-  //   if(state.number%2){
-  //     range.value=scale1.colors(num).concat("#ffffff").concat(scale2.colors(num));
-  //     console.log(range.value.length);
-  //   }
-  //   else{
-  //     range.value=scale1.colors(num).concat(scale2.colors(num));
-  //   }
-  //
-  // }
+  if(diverging===true){
+    colors_diverging.colors1=state.init1.match(reg);
+    colors_diverging.colors2=state.init2.match(reg);
+    if(colors_diverging.colors1!==null&&colors_diverging.colors1!==null){
+      if(colors_diverging.colors1.length === 1) colors_diverging.colors1= autoColors(colors_diverging.colors1[0], Math.ceil(state.number/2));
+      if(colors_diverging.colors2.length === 1) colors_diverging.colors2= autoColors(colors_diverging.colors2[0], Math.ceil(state.number/2));
+      let scale1,scale2;
+      if(method.bezier===true){
+        scale1=chroma.bezier(colors_diverging.colors1).scale();
+        scale2=chroma.bezier(colors_diverging.colors2).scale();
+      }
+      else{
+        scale1=chroma.scale(colors_diverging.colors1);
+        scale2=chroma.scale(colors_diverging.colors2);
+      }
+      const num = Math.ceil(state.number/2);
+      if(state.number%2){
+        const left = scale1.colors(num);
+        range.value=left.slice(0,num - 1).concat("#ffffff").concat(scale2.colors(num).reverse().slice(1));
+        console.log(range.value);
+      }
+      else{
+        range.value=scale1.colors(num+1).slice(0,num).concat(scale2.colors(num+1).reverse().slice(1));
+      }
+    }
+
+
+  }
   const newh=[],news=[],newl=[];
   for(let i=0;i<state.number;i++){
     console.log(range.value[i]);
@@ -220,6 +230,35 @@ watch([datal,datas,datah],([datal,datas,datah],[])=>{
     drawChart();
   }
 })
+
+function autoGradient(color, numColors) {
+  const lab = chroma(color).lab();
+  const lRange = 100 * (0.95 - 1/numColors);
+  const lStep = lRange / (numColors-1);
+  let lStart = (100-lRange)*0.5;
+  const range = _range(lStart, lStart+numColors*lStep, lStep);
+  let offset = 0;
+  if (!diverging.value) {
+    offset = 9999;
+    for (let i=0; i < numColors; i++) {
+      let diff = lab[0] - range[i];
+      if (Math.abs(diff) < Math.abs(offset)) {
+        offset = diff;
+      }
+    }
+  }
+  return range.map(l => chroma.lab([l + offset, lab[1], lab[2]]));
+}
+
+function autoColors(color, numColors, reverse=false) {
+  if (diverging.value) {
+    const colors = autoGradient(color, 3).concat(chroma('#f5f5f5'));
+    if (reverse) colors.reverse();
+    return colors;
+  } else {
+    return autoGradient(color, numColors);
+  }
+}
 
 
 function drawChart(){
