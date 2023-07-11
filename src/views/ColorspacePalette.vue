@@ -26,7 +26,10 @@ function CreateData(){
       for(let b = 127;b >= -128;b -= 13) {
         const color = chroma.lab(l,a,b);
         const hue = chroma(color).hcl()[0],c =chroma(color).hcl()[1],lightness=chroma(color).hcl()[2];
-        if( hue> props.hto ||hue <props.hfrom || c >props.cto || c < props.cfrom || lightness > props.lto || lightness < props.lfrom ) continue;
+        if(props.hfrom > props.hto){
+          if(hue < props.hfrom && hue > props.hto) continue;
+        }
+        else if( hue> props.hto ||hue <props.hfrom || c >props.cto || c < props.cfrom || lightness > props.lto || lightness < props.lfrom ) continue;
         data.push(color);
       }
     }

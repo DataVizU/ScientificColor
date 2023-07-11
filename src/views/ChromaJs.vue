@@ -172,7 +172,8 @@ watch([colors,method,state,diverging],([colors,method,state,diverging],[])=>{
   if(diverging===true){
     colors_diverging.colors1=state.init1.match(reg);
     colors_diverging.colors2=state.init2.match(reg);
-    if(colors_diverging.colors1!==null&&colors_diverging.colors1!==null){
+    console.log(colors_diverging.colors1);
+    if(colors_diverging.colors1!==null&&colors_diverging.colors2!==null){
       if(colors_diverging.colors1.length === 1) colors_diverging.colors1= autoColors(colors_diverging.colors1[0], Math.ceil(state.number/2));
       if(colors_diverging.colors2.length === 1) colors_diverging.colors2= autoColors(colors_diverging.colors2[0], Math.ceil(state.number/2));
       let scale1,scale2;

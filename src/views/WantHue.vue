@@ -118,7 +118,6 @@
         <hr>
         <div class="choose">
           <input v-model="num">
-<!--          Here!改变后有错误-->
           <div class="colors">colors</div>
           <select ref="cluster" >
             <option value="k-means">soft(k-Means)</option>
@@ -216,7 +215,7 @@ import ColorspacePalette from "./ColorspacePalette.vue"
 const palettes=ref();
 const num=ref(4);
 const arr=ref([])
-arr.value.length=num.value;//Here!定义一个长度为num的数组，因为在template里面用v-for得要个数组
+arr.value.length=num.value;
 
 watch(num,(newnum)=>{
   arr.value.length=newnum;
@@ -290,8 +289,8 @@ function makePalette(event){
   bottom.value=true;
   event.target.innerText="Roll Palette"
   const clustering=cluster.value.value;
-  console.log(num.value);//Here!
-  paletteColor.value=iwanthue(num.value,{
+  console.log(num.value);
+  paletteColor.value=iwanthue(Number(num.value),{
     clustering:clustering,
     colorSpace:[stateh.from,stateh.to,statec.from,statec.to,statel.from,statel.to],
     distance:isBlind.value,
@@ -323,6 +322,16 @@ function SortbyLightness(a, b){
   else return -1;
 }
 
+watch(stateh,(stateh)=>{
+  if(stateh.from > stateh.to){
+    document.documentElement.setAttribute("hue-reverse",true);
+    console.log(stateh.to, stateh.from);
+  }
+  else{
+    document.documentElement.setAttribute("hue-reverse",false);
+  }
+})
+
 
 
 defineProps({
@@ -341,6 +350,8 @@ $w-bg-color:rgb(244,244,244);
 $b-bg-color:rgb(51,51,51);
 $w-font-color:rgb(238,238,238);
 $b-font-color:rgb(85,85,85);
+$hue-track-bg:linear-gradient(to right, rgb(244,244,244) calc(v-bind("stateh.from")/360 *100%), transparent calc(v-bind("stateh.from")/360 *100%) calc((v-bind("stateh.to")/360)*100%), rgb(244,244,244) 0%);
+$hue-reverse-track-bg:linear-gradient(to right, transparent calc(v-bind("stateh.to")/360 *100%), rgb(244,244,244) calc(v-bind("stateh.to")/360 *100%) calc((v-bind("stateh.from")/360)*100%), transparent 0%);
 
 @mixin bg-color(){
   [data-theme="white"] & {
@@ -580,12 +591,16 @@ $b-font-color:rgb(85,85,85);
                 position: relative;
 
                 #rangeh2{
-                  &::-webkit-slider-runnable-track{
-                    //@if v-bind("stateh.from") > v-bind("stateh.to"){
-                    //  background: linear-gradient(to right, rgb(244,244,244) calc(v-bind("stateh.from")/360 *100%), transparent calc(v-bind("stateh.from")/360 *100%) calc((v-bind("stateh.to")/360)*100%), rgb(244,244,244) 0%);
-                    //}Here!啊，这样不行的话，那怎么做呢
-                    background: linear-gradient(to right, rgb(244,244,244) calc(v-bind("stateh.from")/360 *100%), transparent calc(v-bind("stateh.from")/360 *100%) calc((v-bind("stateh.to")/360)*100%), rgb(244,244,244) 0%);
+                  &::-webkit-slider-runnable-track {
+                    [hue-reverse=true] & {
+                      background: $hue-reverse-track-bg;
+                    }
 
+                    [hue-reverse=false] & {
+                      background: $hue-track-bg;
+                    }
+
+                    //background: $hue-track-bg;
                   }
                 }
                 #rangec2{
