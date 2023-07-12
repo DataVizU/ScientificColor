@@ -161,7 +161,7 @@
         <h4>JSON</h4>
         <div>
           <h5>HEX json</h5>
-          <div class="pre">
+          <div class="pre" >
             <div v-for="(item,index) in paletteColor" :key="index">"{{item}}",</div>
           </div>
         </div>
@@ -173,9 +173,9 @@
         </div>
         <div>
           <h5>HCL json</h5>
-          <div class="pre">
-            <div v-for="(item,index) in paletteColor" :key="index">{{chroma(item).hcl().map((item)=>item.toFixed(3))}},</div>
-          </div>
+            <div class="pre">
+              <div v-for="(item,index) in paletteColor" :key="index">{{chroma(item).hcl().map((item)=>item.toFixed(3))}},</div>
+            </div>
         </div>
         <div>
           <h5>LAB json</h5>
@@ -188,7 +188,7 @@
         <h4>CSS</h4>
         <div>
           <h5>HEX list for CSS</h5>
-          <div class="pre">
+          <div class="pre" id="resultColors_hexlist">
             <div v-for="(item,index) in paletteColor" :key="index">{{item}}</div>
           </div>
         </div>

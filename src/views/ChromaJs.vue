@@ -113,6 +113,12 @@
               </div>
             </div>
           </div>
+          <div class="box">
+            <div class="head">
+              <div class="head-title">Export the color codes</div>
+            </div>
+            <div id="palette">{{range.toString()}}</div>
+          </div>
         </div>
     </div>
 </template>
@@ -125,19 +131,26 @@ import * as echarts from "echarts";
 import { watch } from "vue";
 import chroma from "chroma-js"
 import _range from "lodash-es/range";
+import { uesColorStore } from "@/stores/color";
 
 const colors=ref([]);
+const colorStore = uesColorStore();
 const colors_diverging=reactive({
   colors1:[],
   colors2:[]
 })
 const state=reactive({
-  init:"#00429d，#ffffff",
-  init1:"#00429d，#ffffff",
-  init2:"#00429d，#ffffff",
-  number:9
+  init:colorStore.nowColor,
+  init1:colorStore.nowColor,
+  init2:colorStore.nowColor,
+  number:colorStore.colorsNumber
 
 })
+watch(colorStore,()=>{
+  state.init = state.init1 = state.init2 = colorStore.nowColor;
+  state.number = colorStore.colorsNumber;
+})
+
 const method=reactive({
   lightness:true,
   bezier:true
@@ -149,7 +162,7 @@ const datah=ref([]),datas=ref([]),datal=ref([]);
 const range=ref([]);
 const reg=/#([a-fA-F0-9]{6})/g;
 
-watch([colors,method,state,diverging],([colors,method,state,diverging],[])=>{
+watch([colors,method,state,diverging],([colors,method,state,diverging])=>{
   if(diverging===false){
     colors.value=state.init.match(reg);
     if(colors.value!==null){
@@ -353,13 +366,14 @@ $btn-color:rgb(108,117,125);
                 }
 
               }
-                .head{
+                >.head{
                     .head-title{
                         font-size: 20px;
                         font-weight: 300;
                         margin-bottom: 10px;
                     }
                 }
+
                 .middle{
                     display: flex;
                     justify-content: space-between;
@@ -435,7 +449,12 @@ $btn-color:rgb(108,117,125);
                         // background-color: v-bind("state.color");
                     }
                 }
+                #palette{
+                  background-color: rgb(244,244,244);
+                  padding: 10px;
+                  word-wrap: break-word;
 
+                }
                 #color{
                     height: 30px;
                     width: 100%;

@@ -1,7 +1,7 @@
 <template>
   <div class="common-layout">
     <el-container>
-      <WantHue></WantHue>
+      <WantHue id="iwanthue"></WantHue>
     </el-container>
   </div>
 </template>

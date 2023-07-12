@@ -148,18 +148,11 @@ const paletteColorHandleChange = (val: string[]) => {
 
 const getBasicColor = () => {
   try {
-    const hueIframe = (document.getElementById("iwanthue") as HTMLIFrameElement)
-      .contentWindow;
-    const hueIframeDocument = hueIframe?.document;
-    const hexColorRwaText = hueIframeDocument?.getElementById(
-      "resultColors_hexlist"
-    )?.innerHTML;
+    const hexColorRwaText=document.getElementById("resultColors_hexlist")?.innerHTML;
+    const reg=/#([a-fA-F0-9]{6})/g;
     if (hexColorRwaText) {
-      const hexColor = hexColorRwaText
-        .replace("<pre>", "")
-        .replace("</pre>", "")
-        .split("<br>");
-      hexColor.length = hexColor.length - 1;
+      const hexColor =< string []> hexColorRwaText
+        .match(reg);
       colorStore.setBasicColor(hexColor);
       const storeColor = colorStore.getBasicColor;
       console.log(storeColor);
@@ -171,14 +164,9 @@ const getBasicColor = () => {
 
 const getPaletteColor = () => {
   try {
-    const paletteIframe = (
-      document.getElementById("palette") as HTMLIFrameElement
-    ).contentWindow;
-    const paletteIframeDocument = paletteIframe?.document;
-    const paletteColorRwaText =
-      paletteIframeDocument?.getElementsByTagName("pre")[0].innerHTML;
-    if (paletteColorRwaText) {
-      const paletteColor = paletteColorRwaText.split(",");
+    const paletteIframe = document.getElementById("palette")?.innerHTML;
+    if(paletteIframe) {
+      const paletteColor = paletteIframe.split(",");
       colorStore.addPalette(paletteColor);
       const palettes = colorStore.getPalette;
       console.log(palettes);
