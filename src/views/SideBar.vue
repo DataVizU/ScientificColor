@@ -148,11 +148,12 @@ const paletteColorHandleChange = (val: string[]) => {
 
 const getBasicColor = () => {
   try {
-    const hexColorRwaText=document.getElementById("resultColors_hexlist")?.innerHTML;
-    const reg=/#([a-fA-F0-9]{6})/g;
+    const hexColorRwaText = document.getElementById(
+      "resultColors_hexlist"
+    )?.innerHTML;
+    const reg = /#([a-fA-F0-9]{6})/g;
     if (hexColorRwaText) {
-      const hexColor =< string []> hexColorRwaText
-        .match(reg);
+      const hexColor = hexColorRwaText.match(reg) as string[];
       colorStore.setBasicColor(hexColor);
       const storeColor = colorStore.getBasicColor;
       console.log(storeColor);
@@ -165,7 +166,7 @@ const getBasicColor = () => {
 const getPaletteColor = () => {
   try {
     const paletteIframe = document.getElementById("palette")?.innerHTML;
-    if(paletteIframe) {
+    if (paletteIframe) {
       const paletteColor = paletteIframe.split(",");
       colorStore.addPalette(paletteColor);
       const palettes = colorStore.getPalette;

@@ -7,16 +7,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from "vue";
 import WantHue from "@/views/WantHue.vue";
-
-const url = computed(() => {
-  if (window.location.href.includes("datavizu.app")) {
-    return "https://iwanthue.datavizu.app/";
-  } else {
-    return "https://datavizu.github.io/iwanthue/";
-  }
-});
 </script>
 
 <style scoped lang="less">
