@@ -1,19 +1,14 @@
 <template>
   <div class="common-layout">
     <el-container>
-      <iframe
-        id="iwanthue"
-        name="iwanthue"
-        :src="url"
-        style="height: calc(100% - 50px)"
-        width="100%"
-      ></iframe>
+      <WantHue id="iwanthue"></WantHue>
     </el-container>
   </div>
 </template>
 
 <script setup lang="ts">
 import { computed } from "vue";
+import WantHue from "@/views/WantHue.vue";
 
 const url = computed(() => {
   if (window.location.href.includes("datavizu.app")) {
