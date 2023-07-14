@@ -45,3 +45,8 @@ npm run lint
 # License
 
 MIT License
+
+# Reference
+
+- https://github.com/medialab/iwanthue
+- https://github.com/gka/palettes
