@@ -30,25 +30,7 @@
         <div class="space-main">
           <div class="left">
             <select ref="type" @change="Change">
-              <option value="default">Default present</option>
-              <option value="all">All colors</option>
-              <option value="colorblind">Colorblind friendly</option>
-              <option value="fancy-light">Fancy(light background)</option>
-              <option value="fancy-dark">Fancy(dark background)</option>
-              <option value="shades">Shades</option>
-              <option value="tarnish">Tarnish</option>
-              <option value="pastel">Pastel</option>
-              <option value="pimp">Pimp</option>
-              <option value="intense">Intense</option>
-              <option value="fluo">Fluo</option>
-              <option value="red-roses">Red Roses</option>
-              <option value="ochre-sand">Ochre Sand</option>
-              <option value="yellow-lime">Yellow Lime</option>
-              <option value="green-mint">Green Mint</option>
-              <option value="ice-cube">Ice Cube</option>
-              <option value="blue-ocean">Blue Ocean</option>
-              <option value="indigo-night">Indigo Night</option>
-              <option value="purple-wine">Purple Wine</option>
+              <option v-for="item in options" :value="item" :key="item">{{item.charAt(0).toUpperCase() + item.slice(1)}}</option>
 
 
             </select>
@@ -64,7 +46,6 @@
                 <input class="second" :value="stateh.to">
               </div>
 
-            </div>
             <div class="range">
               <div class="arg">
                 <div class="key">C</div>
@@ -91,6 +72,7 @@
               </div>
 
             </div>
+
             <br>
             <div class="form-check">
               <input class="form-check-input" type="checkbox"  value="" id="flexCheckDefault" @click="ChangeBlind">
@@ -210,6 +192,8 @@ import { presets } from "@/stores/presets";
 import chroma from "chroma-js";
 import ColorspacePalette from "./ColorspacePalette.vue"
 
+
+const options = ["default","all","colorbind","fancy-light","shades","tarnish","pastel","pimp","intense","fluo","red-roses","ochre-sand","yellow-lime","green-mint","ice-cube","blue-ocean","indigo-night","purple-wine"];
 
 
 const palettes=ref();
