@@ -299,7 +299,6 @@ const options = [
   "indigo-night",
   "purple-wine",
 ];
-
 const palettes = ref();
 const num = ref(4);
 const arr = ref([]);
