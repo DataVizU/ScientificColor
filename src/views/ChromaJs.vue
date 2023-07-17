@@ -201,9 +201,9 @@ const method = reactive({
 });
 const diverging = ref(false);
 
-const datah = ref([]),
-  datas = ref([]),
-  datal = ref([]);
+const dataH = ref([]),
+  dataS = ref([]),
+  dataL = ref([]);
 const range = ref([]);
 const reg = /#([a-fA-F0-9]{6})/g;
 
@@ -220,16 +220,16 @@ watch(
           scale = chroma.bezier(colors.value).scale();
         else scale = chroma.scale(colors.value);
         range.value = scale.colors(state.number);
-        const newh = [],
-          news = [],
-          newl = [];
+        const newH = [],
+          newS = [],
+          newL = [];
         for (let i = 0; i < state.number; i++) {
           const tmparr = chroma(range.value[i]).hsl();
-          newh.push(tmparr[0]),
-            news.push(tmparr[1] * 100),
-            newl.push(tmparr[2] * 100);
+          newH.push(tmparr[0]),
+            newS.push(tmparr[1] * 100),
+            newL.push(tmparr[2] * 100);
         }
-        (datal.value = newl), (datas.value = news), (datah.value = newh);
+        (dataL.value = newL), (dataS.value = newS), (dataH.value = newH);
       }
     }
 
@@ -280,38 +280,38 @@ watch(
         }
       }
     }
-    const newh = [],
-      news = [],
-      newl = [];
+    const newH = [],
+      newS = [],
+      newL = [];
     for (let i = 0; i < state.number; i++) {
       console.log(range.value[i]);
       const tmparr = chroma(range.value[i]).hsl();
-      newh.push(tmparr[0]),
-        news.push(tmparr[1] * 100),
-        newl.push(tmparr[2] * 100);
+      newH.push(tmparr[0]),
+        newS.push(tmparr[1] * 100),
+        newL.push(tmparr[2] * 100);
     }
-    (datal.value = newl), (datas.value = news), (datah.value = newh);
+    (dataL.value = newL), (dataS.value = newS), (dataH.value = newH);
   }
 );
 
-let charth, charts, chartl;
-let optionl, options, optionh;
+let chartH, chartS, chartL;
+let optionL, optionS, optionH;
 
 onMounted(() => {
-  chartl = echarts.init(document.getElementById("lightness"));
-  charts = echarts.init(document.getElementById("saturation"));
-  charth = echarts.init(document.getElementById("hue"));
+  chartL = echarts.init(document.getElementById("lightness"));
+  chartS = echarts.init(document.getElementById("saturation"));
+  chartH = echarts.init(document.getElementById("hue"));
 
   drawChart();
   window.addEventListener("resize", () => {
-    chartl.resize();
-    charts.resize();
-    charth.resize();
+    chartL.resize();
+    chartS.resize();
+    chartH.resize();
   });
 });
 
-watch([datal, datas, datah], () => {
-  if (chartl !== undefined) {
+watch([dataL, dataS, dataH], () => {
+  if (chartL !== undefined) {
     drawChart();
   }
 });
@@ -346,12 +346,12 @@ function autoColors(color, numColors, reverse = false) {
 }
 
 function drawChart() {
-  optionl = addOption(datal, "lightness");
-  options = addOption(datas, "saturation");
-  optionh = addOption(datah, "hue");
-  chartl.setOption(optionl);
-  charts.setOption(options);
-  charth.setOption(optionh);
+  optionL = addOption(dataL, "lightness");
+  optionS = addOption(dataS, "saturation");
+  optionH = addOption(dataH, "hue");
+  chartL.setOption(optionL);
+  chartS.setOption(optionS);
+  chartH.setOption(optionH);
 }
 
 colors.value = state.init.match(reg);

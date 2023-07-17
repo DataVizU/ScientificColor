@@ -41,38 +41,22 @@
         <div class="space-main">
           <div class="left">
             <select ref="type" @change="Change">
-              <option value="default">Default present</option>
-              <option value="all">All colors</option>
-              <option value="colorblind">Colorblind friendly</option>
-              <option value="fancy-light">Fancy(light background)</option>
-              <option value="fancy-dark">Fancy(dark background)</option>
-              <option value="shades">Shades</option>
-              <option value="tarnish">Tarnish</option>
-              <option value="pastel">Pastel</option>
-              <option value="pimp">Pimp</option>
-              <option value="intense">Intense</option>
-              <option value="fluo">Fluo</option>
-              <option value="red-roses">Red Roses</option>
-              <option value="ochre-sand">Ochre Sand</option>
-              <option value="yellow-lime">Yellow Lime</option>
-              <option value="green-mint">Green Mint</option>
-              <option value="ice-cube">Ice Cube</option>
-              <option value="blue-ocean">Blue Ocean</option>
-              <option value="indigo-night">Indigo Night</option>
-              <option value="purple-wine">Purple Wine</option>
+              <option v-for="item in options" :value="item" :key="item">
+                {{ item.charAt(0).toUpperCase() + item.slice(1) }}
+              </option>
             </select>
             <div class="range">
               <div class="arg">
                 <div class="key">H</div>
-                <input class="first" :value="stateh.from" />
-                <div class="color-range" ref="canvash">
+                <input class="first" :value="stateH.from" />
+                <div class="color-range" ref="canvasH">
                   <input
                     type="range"
                     max="360"
                     min="0"
                     class="input1"
                     id="rangeh1"
-                    v-model="stateh.to"
+                    v-model="stateH.to"
                   />
                   <input
                     type="range"
@@ -80,25 +64,25 @@
                     min="0"
                     class="input2"
                     id="rangeh2"
-                    v-model="stateh.from"
+                    v-model="stateH.from"
                   />
                 </div>
 
-                <input class="second" :value="stateh.to" />
+                <input class="second" :value="stateH.to" />
               </div>
             </div>
             <div class="range">
               <div class="arg">
                 <div class="key">C</div>
-                <input class="first" :value="statec.from" />
-                <div class="color-range" ref="canvasc">
+                <input class="first" :value="stateC.from" />
+                <div class="color-range" ref="canvasC">
                   <input
                     type="range"
                     max="100"
                     min="0"
                     class="input1"
                     id="rangec1"
-                    v-model="statec.to"
+                    v-model="stateC.to"
                   />
                   <input
                     type="range"
@@ -106,25 +90,25 @@
                     min="0"
                     class="input2"
                     id="rangec2"
-                    v-model="statec.from"
+                    v-model="stateC.from"
                   />
                 </div>
 
-                <input class="second" :value="statec.to" />
+                <input class="second" :value="stateC.to" />
               </div>
             </div>
             <div class="range">
               <div class="arg">
                 <div class="key">L</div>
-                <input class="first" :value="statel.from" />
-                <div class="color-range" ref="canvasl">
+                <input class="first" :value="stateL.from" />
+                <div class="color-range" ref="canvasL">
                   <input
                     type="range"
                     max="100"
                     min="0"
                     class="input1"
                     id="rangel1"
-                    v-model="statel.to"
+                    v-model="stateL.to"
                   />
                   <input
                     type="range"
@@ -132,13 +116,14 @@
                     min="0"
                     class="input2"
                     id="rangel2"
-                    v-model="statel.from"
+                    v-model="stateL.from"
                   />
                 </div>
 
-                <input class="second" :value="statel.to" />
+                <input class="second" :value="stateL.to" />
               </div>
             </div>
+
             <br />
             <div class="form-check">
               <input
@@ -167,12 +152,12 @@
           <div class="right">
             <ColorspacePalette
               class="picture"
-              :hfrom="stateh.from"
-              :hto="stateh.to"
-              :cfrom="statec.from"
-              :cto="statec.to"
-              :lfrom="statel.from"
-              :lto="statel.to"
+              :hfrom="stateH.from"
+              :hto="stateH.to"
+              :cfrom="stateC.from"
+              :cto="stateC.to"
+              :lfrom="stateL.from"
+              :lto="stateL.to"
             ></ColorspacePalette>
           </div>
         </div>
@@ -294,6 +279,26 @@ import { presets } from "@/stores/presets";
 import chroma from "chroma-js";
 import ColorspacePalette from "./ColorspacePalette.vue";
 
+const options = [
+  "default",
+  "all",
+  "colorbind",
+  "fancy-light",
+  "shades",
+  "tarnish",
+  "pastel",
+  "pimp",
+  "intense",
+  "fluo",
+  "red-roses",
+  "ochre-sand",
+  "yellow-lime",
+  "green-mint",
+  "ice-cube",
+  "blue-ocean",
+  "indigo-night",
+  "purple-wine",
+];
 const palettes = ref();
 const num = ref(4);
 const arr = ref([]);
@@ -308,62 +313,62 @@ const bottom = ref(false);
 const type = ref();
 const theme = ref("white");
 
-const stateh = reactive({
+const stateH = reactive({
   from: 0,
   to: 360,
 });
-const statec = reactive({
+const stateC = reactive({
   from: 30,
   to: 80,
 });
-const statel = reactive({
+const stateL = reactive({
   from: 35,
   to: 80,
 });
 
-const canvash = ref();
-const canvasc = ref();
-const canvasl = ref();
+const canvasH = ref();
+const canvasC = ref();
+const canvasL = ref();
 
 function Change(event) {
   const present = presets[event.target.value];
-  stateh.from = present[0];
-  stateh.to = present[1];
-  statec.from = present[2];
-  statec.to = present[3];
-  statel.from = present[4];
-  statel.to = present[5];
+  stateH.from = present[0];
+  stateH.to = present[1];
+  stateC.from = present[2];
+  stateC.to = present[3];
+  stateL.from = present[4];
+  stateL.to = present[5];
 }
 
 //不太清楚背景颜色是根据什么渲染出来的
 onMounted(() => {
-  canvash.value.style.background =
+  canvasH.value.style.background =
     "linear-gradient(to right, " +
     chroma
       .scale(["red", "orange", "yellow", "green", "blue", "indigo", "violet"])
       .colors(10000)
       .join(",") +
     ")";
-  canvasc.value.style.background =
+  canvasC.value.style.background =
     "linear-gradient(to right, " +
     chroma.scale(["white", "violet"]).colors(10000).join(",") +
     ")";
-  canvasl.value.style.background =
+  canvasL.value.style.background =
     "linear-gradient(to right, " +
     chroma.scale(["black", "white"]).colors(10000).join(",") +
     ")";
 });
 
 onMounted(() => {
-  const rangeh1 = document.getElementById("rangeh1");
-  const rangeh2 = document.getElementById("rangeh2");
-  const rangec1 = document.getElementById("rangec1");
-  const rangec2 = document.getElementById("rangec2");
-  const rangel1 = document.getElementById("rangel1");
-  const rangel2 = document.getElementById("rangel2");
-  setRange(rangeh1, rangeh2, stateh, 360);
-  setRange(rangec1, rangec2, statec, 100);
-  setRange(rangel1, rangel2, statel, 100);
+  const rangeH1 = document.getElementById("rangeh1");
+  const rangeH2 = document.getElementById("rangeh2");
+  const rangeC1 = document.getElementById("rangec1");
+  const rangeC2 = document.getElementById("rangec2");
+  const rangeL1 = document.getElementById("rangel1");
+  const rangeL2 = document.getElementById("rangel2");
+  setRange(rangeH1, rangeH2, stateH, 360);
+  setRange(rangeC1, rangeC2, stateC, 100);
+  setRange(rangeL1, rangeL2, stateL, 100);
 });
 function setRange(range1, range2, state, max) {
   range1.addEventListener("input", function () {
@@ -389,12 +394,12 @@ function makePalette(event) {
   paletteColor.value = iwanthue(Number(num.value), {
     clustering: clustering,
     colorSpace: [
-      stateh.from,
-      stateh.to,
-      statec.from,
-      statec.to,
-      statel.from,
-      statel.to,
+      stateH.from,
+      stateH.to,
+      stateC.from,
+      stateC.to,
+      stateL.from,
+      stateL.to,
     ],
     distance: isBlind.value,
   });
@@ -425,10 +430,10 @@ function SortbyLightness(a, b) {
   else return -1;
 }
 
-watch(stateh, (stateh) => {
-  if (stateh.from > stateh.to) {
+watch(stateH, (stateH) => {
+  if (stateH.from > stateH.to) {
     document.documentElement.setAttribute("hue-reverse", true);
-    console.log(stateh.to, stateh.from);
+    console.log(stateH.to, stateH.from);
   } else {
     document.documentElement.setAttribute("hue-reverse", false);
   }
@@ -451,16 +456,16 @@ $w-font-color: rgb(238, 238, 238);
 $b-font-color: rgb(85, 85, 85);
 $hue-track-bg: linear-gradient(
   to right,
-  rgb(244, 244, 244) calc(v-bind("stateh.from") / 360 * 100%),
-  transparent calc(v-bind("stateh.from") / 360 * 100%)
-    calc((v-bind("stateh.to") / 360) * 100%),
+  rgb(244, 244, 244) calc(v-bind("stateH.from") / 360 * 100%),
+  transparent calc(v-bind("stateH.from") / 360 * 100%)
+    calc((v-bind("stateH.to") / 360) * 100%),
   rgb(244, 244, 244) 0%
 );
 $hue-reverse-track-bg: linear-gradient(
   to right,
-  transparent calc(v-bind("stateh.to") / 360 * 100%),
-  rgb(244, 244, 244) calc(v-bind("stateh.to") / 360 * 100%)
-    calc((v-bind("stateh.from") / 360) * 100%),
+  transparent calc(v-bind("stateH.to") / 360 * 100%),
+  rgb(244, 244, 244) calc(v-bind("stateH.to") / 360 * 100%)
+    calc((v-bind("stateH.from") / 360) * 100%),
   transparent 0%
 );
 
@@ -704,17 +709,15 @@ $hue-reverse-track-bg: linear-gradient(
                     [hue-reverse="false"] & {
                       background: $hue-track-bg;
                     }
-
-                    //background: $hue-track-bg;
                   }
                 }
                 #rangec2 {
                   &::-webkit-slider-runnable-track {
                     background: linear-gradient(
                       to right,
-                      rgb(244, 244, 244) calc(1% * v-bind("statec.from")),
-                      transparent calc(1% * v-bind("statec.from"))
-                        calc(1% * (v-bind("statec.to"))),
+                      rgb(244, 244, 244) calc(1% * v-bind("stateC.from")),
+                      transparent calc(1% * v-bind("stateC.from"))
+                        calc(1% * (v-bind("stateC.to"))),
                       rgb(244, 244, 244) 0%
                     );
                   }
@@ -723,9 +726,9 @@ $hue-reverse-track-bg: linear-gradient(
                   &::-webkit-slider-runnable-track {
                     background: linear-gradient(
                       to right,
-                      rgb(244, 244, 244) calc(1% * v-bind("statel.from")),
-                      transparent calc(1% * v-bind("statel.from"))
-                        calc(1% * (v-bind("statel.to"))),
+                      rgb(244, 244, 244) calc(1% * v-bind("stateL.from")),
+                      transparent calc(1% * v-bind("stateL.from"))
+                        calc(1% * (v-bind("stateL.to"))),
                       rgb(244, 244, 244) 0%
                     );
                   }
