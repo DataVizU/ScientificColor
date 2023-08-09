@@ -1,13 +1,15 @@
 <template>
   <div class="common-layout">
     <el-container>
-      <ChromaJs></ChromaJs>
+      <ChromaJs ></ChromaJs>
     </el-container>
   </div>
 </template>
 
 <script setup lang="ts">
 import ChromaJs from "./ChromaJs.vue";
+
+
 </script>
 
 <style scoped lang="less">
