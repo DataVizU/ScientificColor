@@ -169,6 +169,7 @@ const getPaletteColor = () => {
   try {
     const prevKey = keyStore.getKey;
     keyStore.setKey(prevKey + 1);
+    colorStore.nowColor = "#00429d";
     const paletteIframe = document.getElementById("palette")?.innerHTML;
     if (paletteIframe) {
       const paletteColor = paletteIframe.split(",");
