@@ -1,21 +1,14 @@
 <template>
   <div class="common-layout">
     <el-container>
-      <ChromaJs :key="key"></ChromaJs>
+      <ChromaJs ></ChromaJs>
     </el-container>
   </div>
 </template>
 
 <script setup lang="ts">
 import ChromaJs from "./ChromaJs.vue";
-import {useKeyStore} from "@/stores/key";
-import {ref, watch} from "vue";
-const keyStore = useKeyStore();
-const key = ref<string>();
 
-watch(() => keyStore.key, (val) => {
-  key.value = val;
-});
 
 </script>
 

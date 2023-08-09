@@ -59,7 +59,7 @@
               type="number"
               id="number"
               v-bind:min="colors.length"
-              v-model="state.number"
+              v-model="colorStore.colorsNumber"
             />
           </div>
         </div>
@@ -72,7 +72,7 @@
           <div>
             <input
               type="text"
-              v-model="state.init"
+              v-model="colorStore.nowColor"
               class="form-control"
               id="exampleFormControlInput1"
             />
@@ -85,7 +85,7 @@
           <div class="color-input">
             <input
               type="text"
-              v-model="state.init1"
+              v-model="colorStore.nowColor"
               class="form-control"
               id="exampleFormControlInput1"
             />
@@ -93,7 +93,7 @@
           <div class="color-input">
             <input
               type="text"
-              v-model="state.init2"
+              v-model="colorStore.nowColor2"
               class="form-control"
               id="exampleFormControlInput1"
             />
@@ -184,16 +184,16 @@ const colors_diverging = reactive({
   colors1: [],
   colors2: [],
 });
-const state = reactive({
-  init: colorStore.nowColor,
-  init1: colorStore.nowColor,
-  init2: colorStore.nowColor,
-  number: colorStore.colorsNumber,
-});
-watch(colorStore, () => {
-  state.init = state.init1 = state.init2 = colorStore.nowColor;
-  state.number = colorStore.colorsNumber;
-});
+// const state = reactive({
+//   init: colorStore.nowColor,
+//   init1: colorStore.nowColor,
+//   init2: colorStore.nowColor,
+//   number: colorStore.colorsNumber,
+// });
+// watch(colorStore, () => {
+//   state.init = state.init1 = state.init2 = colorStore.nowColor;
+//   state.number = colorStore.colorsNumber;
+// });
 
 const method = reactive({
   lightness: true,
@@ -208,22 +208,22 @@ const range = ref([]);
 const reg = /#([a-fA-F0-9]{6})/g;
 
 watch(
-  [colors, method, state, diverging],
-  ([colors, method, state, diverging]) => {
+  [colors, method, colorStore, diverging],
+  ([colors, method, colorStore, diverging]) => {
     if (diverging === false) {
-      colors.value = state.init.match(reg);
+      colors.value = colorStore.nowColor.match(reg);
       if (colors.value !== null) {
         if (colors.value.length === 1)
-          colors.value = autoColors(colors.value[0], state.number);
+          colors.value = autoColors(colors.value[0], colorStore.colorsNumber);
         let scale;
         if (method.bezier === true && colors.value.length > 1)
           scale = chroma.bezier(colors.value).scale();
         else scale = chroma.scale(colors.value);
-        range.value = scale.colors(state.number);
+        range.value = scale.colors(colorStore.colorsNumber);
         const newH = [],
           newS = [],
           newL = [];
-        for (let i = 0; i < state.number; i++) {
+        for (let i = 0; i < colorStore.colorsNumber; i++) {
           const tmparr = chroma(range.value[i]).hsl();
           newH.push(tmparr[0]),
             newS.push(tmparr[1] * 100),
@@ -234,8 +234,8 @@ watch(
     }
 
     if (diverging === true) {
-      colors_diverging.colors1 = state.init1.match(reg);
-      colors_diverging.colors2 = state.init2.match(reg);
+      colors_diverging.colors1 = colorStore.nowColor.match(reg);
+      colors_diverging.colors2 = colorStore.nowColor2.match(reg);
       if (
         colors_diverging.colors1 !== null &&
         colors_diverging.colors2 !== null
@@ -243,12 +243,12 @@ watch(
         if (colors_diverging.colors1.length === 1)
           colors_diverging.colors1 = autoColors(
             colors_diverging.colors1[0],
-            Math.ceil(state.number / 2)
+            Math.ceil(colorStore.colorsNumber / 2)
           );
         if (colors_diverging.colors2.length === 1)
           colors_diverging.colors2 = autoColors(
             colors_diverging.colors2[0],
-            Math.ceil(state.number / 2)
+            Math.ceil(colorStore.colorsNumber / 2)
           );
         let scale1, scale2;
         if (method.bezier === true) {
@@ -258,8 +258,8 @@ watch(
           scale1 = chroma.scale(colors_diverging.colors1);
           scale2 = chroma.scale(colors_diverging.colors2);
         }
-        const num = Math.ceil(state.number / 2);
-        if (state.number % 2) {
+        const num = Math.ceil(colorStore.colorsNumber / 2);
+        if (colorStore.colorsNumber % 2) {
           const left = scale1.colors(num);
           range.value = left
             .slice(0, num - 1)
@@ -281,7 +281,7 @@ watch(
     const newH = [],
       newS = [],
       newL = [];
-    for (let i = 0; i < state.number; i++) {
+    for (let i = 0; i < colorStore.colorsNumber; i++) {
       const tmparr = chroma(range.value[i]).hsl();
       newH.push(tmparr[0]),
         newS.push(tmparr[1] * 100),
@@ -351,7 +351,7 @@ function drawChart() {
   chartH.setOption(optionH);
 }
 
-colors.value = state.init.match(reg);
+colors.value = colorStore.nowColor.match(reg);
 function addOption(data, title) {
   return {
     title: {
@@ -505,8 +505,7 @@ $btn-color: rgb(108, 117, 125);
         display: flex;
         .palette-colors {
           height: 100%;
-          width: calc(100% / (v-bind("state.number")));
-          // background-color: v-bind("state.color");
+          width: calc(100% / (v-bind("colorStore.colorsNumber")));
         }
       }
       #palette {
