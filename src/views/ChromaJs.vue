@@ -236,7 +236,6 @@ watch(
     if (diverging === true) {
       colors_diverging.colors1 = state.init1.match(reg);
       colors_diverging.colors2 = state.init2.match(reg);
-      console.log(colors_diverging.colors1);
       if (
         colors_diverging.colors1 !== null &&
         colors_diverging.colors2 !== null
@@ -266,7 +265,6 @@ watch(
             .slice(0, num - 1)
             .concat("#ffffff")
             .concat(scale2.colors(num).reverse().slice(1));
-          console.log(range.value);
         } else {
           range.value = scale1
             .colors(num + 1)
@@ -284,7 +282,6 @@ watch(
       newS = [],
       newL = [];
     for (let i = 0; i < state.number; i++) {
-      console.log(range.value[i]);
       const tmparr = chroma(range.value[i]).hsl();
       newH.push(tmparr[0]),
         newS.push(tmparr[1] * 100),
